@@ -100,8 +100,8 @@ class LineChart extends AbstractChart
 
     lines.exit().remove()
 
-    @drawLines(lines, newLines)
-    @drawAreas(lines, newLines) if @options.area
+    @drawLines(newLines, lines)
+    @drawAreas(newLines, lines) if @options.area
     @drawCircles(lines, data) if @options.dots
 
       

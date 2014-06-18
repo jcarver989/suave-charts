@@ -132,9 +132,9 @@ LineChart = (function(_super) {
     });
     newLines = lines.enter().append("g").attr("class", "lineGroup");
     lines.exit().remove();
-    this.drawLines(lines, newLines);
+    this.drawLines(newLines, lines);
     if (this.options.area) {
-      this.drawAreas(lines, newLines);
+      this.drawAreas(newLines, lines);
     }
     if (this.options.dots) {
       return this.drawCircles(lines, data);
