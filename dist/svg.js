@@ -6,7 +6,7 @@ createSvg = function(d3, selector) {
   elem = document.querySelector(selector);
   elemWidth = elem.offsetWidth;
   elemHeight = elem.offsetHeight;
-  padding = 80;
+  padding = 100;
   svg = d3.select(selector).append("svg").attr('viewBox', "0 0 " + elemWidth + " " + elemHeight).attr('preserveAspectRatio', 'xMinYMin').attr("width", "100%").attr("height", "100%").append("g").attr("transform", "translate(" + padding / 2 + "," + padding / 2 + ")");
   return [svg, elemWidth - padding, elemHeight - padding];
 };

@@ -6,9 +6,26 @@ colors = [
   "#34495E"
 ]
 
-defaultOptions = {
-  margin: { top: 20, right: 50, bottom: 30, left: 50 }
 
+class ColorManager
+  constructor: () ->
+    @colors = colors
+    @assignedColors = {}
+    @current = 0
+
+  getOrSet: (key) ->
+    @assignedColors[key] ||= @nextColor()
+    @assignedColors[key]
+
+  set: (key, color) ->
+    @assignedColors[key] = color
+
+  nextColor: () ->
+    index = @current % @colors.length
+    @current += 1
+    @colors[index]
+
+defaultOptions = {
   xScale: d3.scale.linear()
   yScale: d3.scale.linear()
 }

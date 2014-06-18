@@ -2,7 +2,7 @@ createSvg = (d3, selector) ->
   elem = document.querySelector(selector)
   elemWidth = elem.offsetWidth
   elemHeight = elem.offsetHeight
-  padding = 80
+  padding = 100
 
   svg = d3.select(selector).append("svg")
     .attr('viewBox',"0 0 #{elemWidth} #{elemHeight}" )

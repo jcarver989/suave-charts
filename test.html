@@ -71,7 +71,8 @@
 
         chart = new LineChart("#chart", {
           xScale: d3.time.scale(),
-          area: false
+          area: false,
+          dots: true
         })
 
         chart.xAxis
@@ -79,7 +80,7 @@
         .tickFormat(d3.time.format("%Y-%m-%d"))
 
       chart.draw([ 
-        { label: "line1", data: data1 }, 
+        { label: "line1", data: data1, color: "#00aadd", area_color: "rgba(0, 170, 221, 0.3)" }, 
         { label: "line2", data: data2  }
       ])
 

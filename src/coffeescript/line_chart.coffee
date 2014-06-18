@@ -11,8 +11,20 @@ class LineChart extends AbstractChart
       .y (d) => @y(extractY(d))
       .y0(@height)
 
+
+    @lineColors = new ColorManager()
+    @areaColors = new ColorManager()
+
   drawCircles: (lines, data) ->
-    circles = lines.selectAll("circle").data((d) -> d.data)
+    circles = lines.selectAll("circle").data((line) =>
+      color = @lineColors.getOrSet(line.label)
+      data = line.data
+
+      for d in data
+        d.color = color
+
+      data
+    )
 
     circles.
       transition()
@@ -22,7 +34,7 @@ class LineChart extends AbstractChart
 
     circles.enter().append("circle")
       .attr("class", "dot")
-      .attr("fill", (d, i) -> colors[i % colors.length])
+      .attr("fill", (d, i) -> d.color)
       .attr("r", 5)
       .attr("cx", (d) => @x(extractX(d)))
       .attr("cy", (d) => @y(extractY(d)))
@@ -33,7 +45,7 @@ class LineChart extends AbstractChart
     enter
       .append("path")
       .attr("class", "line")
-      .attr("stroke", (d, i) -> colors[i % colors.length])
+      .attr("stroke", (d, i) => @lineColors.getOrSet(d.label))
       .attr("d", (d) => @line(d.data))
 
     update
@@ -46,7 +58,7 @@ class LineChart extends AbstractChart
     enter
       .append("path")
       .attr("class", "area")
-      .attr("fill", (d, i) -> "rgba(0,0,0,.1)")
+      .attr("fill", (d, i) => @areaColors.getOrSet(d.label))
       .attr("d", (d) => @area(d.data))
 
     update
@@ -56,10 +68,25 @@ class LineChart extends AbstractChart
       .attr("d", (d) => @area(d.data))
 
 
-  draw: (lines) ->
-    data = (line.data for line in lines)
-    flattened = d3.merge(data)
+  assignColor: (line) ->
+    if line.color
+      @lineColors.set(line.label, line.color)
+    else
+      @lineColors.getOrSet(line.label)
 
+    if line.area_color
+      @areaColors.set(line.label, line.area_color)
+    else
+      @areaColors.set(line.label, @lineColors.getOrSet(line.label))
+
+  draw: (lines) ->
+    data = []
+
+    for line, i in lines
+      data.push(line.data)
+      @assignColor(line)
+
+    flattened = d3.merge(data)
     @x.domain d3.extent(flattened, extractX)
     @y.domain [0, d3.max(flattened, extractY)]
 
@@ -75,7 +102,7 @@ class LineChart extends AbstractChart
 
     @drawLines(lines, newLines)
     @drawAreas(lines, newLines) if @options.area
-    @drawCircles(lines, data) if @options.dots 
+    @drawCircles(lines, data) if @options.dots
 
       
 
