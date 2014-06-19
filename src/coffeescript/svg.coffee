@@ -1,19 +1,26 @@
 createSvg = (d3, selector) ->
+
+  margin = {
+    top: 20,
+    bottom: 20,
+    left: 10
+    right: 10,
+  }
+
   elem = document.querySelector(selector)
-  elemWidth = elem.offsetWidth
   elemHeight = elem.offsetHeight
-  padding = 100
+  elemWidth = elem.offsetWidth
+
+  width = elemWidth - margin.left - margin.right
+  height = elemHeight - margin.bottom - margin.top
 
   svg = d3.select(selector).append("svg")
-    .attr('viewBox',"0 0 #{elemWidth} #{elemHeight}" )
-    .attr('preserveAspectRatio','xMinYMin')
-    .attr("width", "100%")
-    .attr("height", "100%")
+    .attr("width", elemWidth)
+    .attr("height", elemHeight)
     .append("g")
-      .attr("transform", "translate(" + padding / 2 + "," + padding / 2 + ")")
+      .attr("transform", "translate(#{margin.left},#{margin.top})")
 
-  [svg, elemWidth - padding, elemHeight - padding]
-
+  [svg, width, height]
 
 extractX = (d) -> d[0]
 extractY = (d) -> d[1]
