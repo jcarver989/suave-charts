@@ -2,35 +2,26 @@
 <html>
   <head>
     <script src="bower_components/d3/d3.min.js"></script>
-
+    <link rel="stylesheet" type="text/css" href="src/css/defaults.css">
 
     <style>
-      .axis path,
-      .axis line {
-        fill: none;
-        stroke: #ccc;
-        shape-rendering: crispEdges;
+      .line1.line {
+        stroke: #00aadd;
       }
 
-      .x.axis path {
+      .line1.area, .line1.dot {
+        fill: #00aadd;
       }
 
-      .dot {
-        stroke: #fff;
-        stroke-width: 3px;
+      .line2.line  {
+        stroke: #33cccc;
       }
 
-      .line {
-        fill: none;
-        stroke-width: 3px;
-      }
-
-      .line.blue {
-        stroke: "#00aadd"
+      .line2.area, .line2.dot {
+        fill: #33cccc;
       }
 
       div {
-        padding: 20px;
         height: 500px;
       }
     </style>
@@ -80,7 +71,7 @@
         .tickFormat(d3.time.format("%Y-%m-%d"))
 
       chart.draw([ 
-        { label: "line1", data: data1, color: "#00aadd", area_color: "rgba(0, 170, 221, 0.3)" }, 
+        { label: "line1", data: data1 }, 
         { label: "line2", data: data2  }
       ])
 

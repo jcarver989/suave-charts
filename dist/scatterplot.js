@@ -19,8 +19,8 @@ ScatterPlot = (function(_super) {
     this.y.domain([0, d3.max(data, extractY)]);
     this.drawAxes();
     circles = this.svg.selectAll("circle").data(data);
-    circles.enter().append("circle").attr("class", "circle").attr("fill", function(d, i) {
-      return colors[i % colors.length];
+    circles.enter().append("circle").attr("class", function(d) {
+      return "circle " + (d.css_class || '');
     }).attr("r", 5).attr("cx", (function(_this) {
       return function(d) {
         return _this.x(extractX(d));

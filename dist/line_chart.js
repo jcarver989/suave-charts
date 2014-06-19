@@ -27,24 +27,21 @@ LineChart = (function(_super) {
         return _this.y(extractY(d));
       };
     })(this)).y0(this.height);
-    this.lineColors = new ColorManager();
-    this.areaColors = new ColorManager();
   }
 
   LineChart.prototype.drawCircles = function(lines, data) {
     var circles;
-    circles = lines.selectAll("circle").data((function(_this) {
-      return function(line) {
-        var color, d, _i, _len;
-        color = _this.lineColors.getOrSet(line.label);
-        data = line.data;
-        for (_i = 0, _len = data.length; _i < _len; _i++) {
-          d = data[_i];
-          d.color = color;
-        }
-        return data;
-      };
-    })(this));
+    circles = lines.selectAll("circle").data(function(line) {
+      var d, _i, _len, _ref;
+      data = [];
+      _ref = line.data;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        d = _ref[_i];
+        d.label = line.label;
+        data.push(d);
+      }
+      return data;
+    });
     circles.transition().delay(200).attr("cx", (function(_this) {
       return function(d) {
         return _this.x(extractX(d));
@@ -54,8 +51,8 @@ LineChart = (function(_super) {
         return _this.y(extractY(d));
       };
     })(this));
-    circles.enter().append("circle").attr("class", "dot").attr("fill", function(d, i) {
-      return d.color;
+    circles.enter().append("circle").attr("class", function(d) {
+      return "dot " + d.label;
     }).attr("r", 5).attr("cx", (function(_this) {
       return function(d) {
         return _this.x(extractX(d));
@@ -69,11 +66,9 @@ LineChart = (function(_super) {
   };
 
   LineChart.prototype.drawLines = function(enter, update) {
-    enter.append("path").attr("class", "line").attr("stroke", (function(_this) {
-      return function(d, i) {
-        return _this.lineColors.getOrSet(d.label);
-      };
-    })(this)).attr("d", (function(_this) {
+    enter.append("path").attr("class", function(d) {
+      return "line " + d.label;
+    }).attr("d", (function(_this) {
       return function(d) {
         return _this.line(d.data);
       };
@@ -86,11 +81,9 @@ LineChart = (function(_super) {
   };
 
   LineChart.prototype.drawAreas = function(enter, update) {
-    enter.append("path").attr("class", "area").attr("fill", (function(_this) {
-      return function(d, i) {
-        return _this.areaColors.getOrSet(d.label);
-      };
-    })(this)).attr("d", (function(_this) {
+    enter.append("path").attr("class", function(d) {
+      return "area " + d.label;
+    }).attr("d", (function(_this) {
       return function(d) {
         return _this.area(d.data);
       };
@@ -102,28 +95,18 @@ LineChart = (function(_super) {
     })(this));
   };
 
-  LineChart.prototype.assignColor = function(line) {
-    if (line.color) {
-      this.lineColors.set(line.label, line.color);
-    } else {
-      this.lineColors.getOrSet(line.label);
-    }
-    if (line.area_color) {
-      return this.areaColors.set(line.label, line.area_color);
-    } else {
-      return this.areaColors.set(line.label, this.lineColors.getOrSet(line.label));
-    }
-  };
-
   LineChart.prototype.draw = function(lines) {
-    var data, flattened, i, line, newLines, _i, _len;
-    data = [];
-    for (i = _i = 0, _len = lines.length; _i < _len; i = ++_i) {
-      line = lines[i];
-      data.push(line.data);
-      this.assignColor(line);
-    }
-    flattened = d3.merge(data);
+    var allPoints, flattened, line, newLines;
+    allPoints = (function() {
+      var _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = lines.length; _i < _len; _i++) {
+        line = lines[_i];
+        _results.push(line.data);
+      }
+      return _results;
+    })();
+    flattened = d3.merge(allPoints);
     this.x.domain(d3.extent(flattened, extractX));
     this.y.domain([0, d3.max(flattened, extractY)]);
     this.drawAxes();
@@ -137,7 +120,7 @@ LineChart = (function(_super) {
       this.drawAreas(newLines, lines);
     }
     if (this.options.dots) {
-      return this.drawCircles(lines, data);
+      return this.drawCircles(lines, allPoints);
     }
   };
 

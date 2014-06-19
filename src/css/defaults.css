@@ -1,0 +1,24 @@
+/* Axes */
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #444;
+  stroke-width: 2px;
+  shape-rendering: crispEdges;
+}
+
+/* Line Charts */
+.dot {
+  stroke: #fff;
+  stroke-width: 3px;
+}
+
+.line {
+  fill: none;
+  stroke-width: 2px;
+}
+
+.area {
+  stroke: none;
+}

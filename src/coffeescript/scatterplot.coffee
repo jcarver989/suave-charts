@@ -11,8 +11,7 @@ class ScatterPlot extends AbstractChart
     circles = @svg.selectAll("circle").data(data)
 
     circles.enter().append("circle")
-      .attr("class", "circle")
-      .attr("fill",  (d, i) -> colors[i % colors.length])
+      .attr("class", (d) -> "circle #{d.css_class || ''}")
       .attr("r", 5)
       .attr("cx", (d) => @x(extractX(d)))
       .attr("cy", (d) => @y(extractY(d)))
