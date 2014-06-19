@@ -2,13 +2,20 @@
 var createSvg, extractX, extractY;
 
 createSvg = function(d3, selector) {
-  var elem, elemHeight, elemWidth, padding, svg;
+  var elem, elemHeight, elemWidth, height, margin, svg, width;
+  margin = {
+    top: 50,
+    bottom: 50,
+    left: 50,
+    right: 50
+  };
   elem = document.querySelector(selector);
-  elemWidth = elem.offsetWidth;
   elemHeight = elem.offsetHeight;
-  padding = 100;
-  svg = d3.select(selector).append("svg").attr('viewBox', "0 0 " + elemWidth + " " + elemHeight).attr('preserveAspectRatio', 'xMinYMin').attr("width", "100%").attr("height", "100%").append("g").attr("transform", "translate(" + padding / 2 + "," + padding / 2 + ")");
-  return [svg, elemWidth - padding, elemHeight - padding];
+  elemWidth = elem.offsetWidth;
+  width = elemWidth - margin.left - margin.right;
+  height = elemHeight - margin.bottom - margin.top;
+  svg = d3.select(selector).append("svg").attr('preserveAspectRatio', 'xMinYMin').attr("width", elemWidth).attr("height", elemHeight).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  return [svg, width, height];
 };
 
 extractX = function(d) {

@@ -1,10 +1,10 @@
 createSvg = (d3, selector) ->
 
   margin = {
-    top: 20,
-    bottom: 20,
-    left: 10
-    right: 10,
+    top: 50,
+    bottom: 50,
+    left: 50
+    right: 50,
   }
 
   elem = document.querySelector(selector)
@@ -15,6 +15,7 @@ createSvg = (d3, selector) ->
   height = elemHeight - margin.bottom - margin.top
 
   svg = d3.select(selector).append("svg")
+    .attr('preserveAspectRatio','xMinYMin')
     .attr("width", elemWidth)
     .attr("height", elemHeight)
     .append("g")
@@ -24,3 +25,4 @@ createSvg = (d3, selector) ->
 
 extractX = (d) -> d[0]
 extractY = (d) -> d[1]
+
