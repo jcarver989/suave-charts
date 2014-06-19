@@ -53,11 +53,6 @@
           ] 
         })
 
-
-        var data2 = data1.map(function(d) { return [d[0], d[1] * 2] })
-        var data3 = data1.map(function(d) { return [d[0], d[1] * 3] })
-
-
         chart = new LineChart("#chart", {
           xScale: d3.time.scale(),
           area: false,
@@ -72,12 +67,6 @@
         { label: "line1", data: data1 }, 
         { label: "line2", data: data2  }
       ])
-
-
-      chart2 = new ScatterPlot("#chart2", {
-      })
-      chart2.draw([[ 10, 20], [20, 50], [10, 10], [50, 100]])
-      
     </script>
   </body>
 </html>
