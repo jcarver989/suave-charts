@@ -17,7 +17,7 @@ AbstractChart = (function() {
       opts[key] = options[key];
     }
     this.options = opts;
-    _ref = createSvg(d3, selector), this.svg = _ref[0], this.width = _ref[1], this.height = _ref[2];
+    _ref = createSvg(d3, selector, this.options.margin), this.svg = _ref[0], this.width = _ref[1], this.height = _ref[2];
     this.x = opts.xScale.range([0, this.width]);
     this.y = opts.yScale.range([this.height, 0]);
     this.xAxis = d3.svg.axis().scale(this.x).orient("bottom").tickPadding(20);

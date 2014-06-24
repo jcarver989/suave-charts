@@ -11,7 +11,7 @@ class AbstractChart
     @options = opts
 
     # create canvas
-    [@svg, @width, @height] = createSvg(d3, selector)
+    [@svg, @width, @height] = createSvg(d3, selector, @options.margin)
 
     # scales
     @x = opts.xScale.range [0, @width]

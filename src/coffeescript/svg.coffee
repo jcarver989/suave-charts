@@ -1,11 +1,4 @@
-createSvg = (d3, selector) ->
-
-  margin = {
-    top: 50,
-    bottom: 50,
-    left: 50
-    right: 50,
-  }
+createSvg = (d3, selector, margin) ->
 
   elem = document.querySelector(selector)
   elemHeight = elem.offsetHeight
