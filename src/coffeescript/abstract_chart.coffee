@@ -8,6 +8,8 @@ class AbstractChart
     for key, val of options
       opts[key] = options[key]
 
+    @options = opts
+
     # create canvas
     [@svg, @width, @height] = createSvg(d3, selector)
 

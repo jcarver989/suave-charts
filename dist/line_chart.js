@@ -7,7 +7,9 @@ LineChart = (function(_super) {
   __extends(LineChart, _super);
 
   function LineChart(selector, options) {
-    this.options = options != null ? options : {};
+    if (options == null) {
+      options = {};
+    }
     LineChart.__super__.constructor.call(this, selector, options);
     this.line = d3.svg.line().x((function(_this) {
       return function(d) {
@@ -29,8 +31,8 @@ LineChart = (function(_super) {
     })(this)).y0(this.height);
   }
 
-  LineChart.prototype.drawCircles = function(lines, data) {
-    var circles;
+  LineChart.prototype.drawCircles = function(lines, data, tooltips) {
+    var circles, newCircles, tip;
     circles = lines.selectAll("circle").data(function(line) {
       var d, _i, _len, _ref;
       data = [];
@@ -53,7 +55,7 @@ LineChart = (function(_super) {
         return _this.y(extractY(d));
       };
     })(this));
-    circles.enter().append("circle").attr("class", function(d) {
+    newCircles = circles.enter().append("circle").attr("class", function(d) {
       return "dot " + d.label;
     }).attr("r", 5).attr("cx", (function(_this) {
       return function(d) {
@@ -64,6 +66,15 @@ LineChart = (function(_super) {
         return _this.y(extractY(d));
       };
     })(this));
+    if (tooltips) {
+      tip = (this.tip || (this.tip = new Tooltip(document)));
+      newCircles.on("mouseover", function(d) {
+        tip.html(d[1]);
+        return tip.show(this);
+      }).on("mouseout", function(d) {
+        return tip.hide();
+      });
+    }
     return circles.exit().remove();
   };
 
@@ -126,7 +137,7 @@ LineChart = (function(_super) {
       this.drawAreas(newLines, lines);
     }
     if (this.options.dots) {
-      return this.drawCircles(lines, allPoints);
+      return this.drawCircles(lines, allPoints, this.options.tooltips);
     }
   };
 

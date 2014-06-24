@@ -1,5 +1,5 @@
 class LineChart extends AbstractChart
-  constructor: (selector, @options = {}) ->
+  constructor: (selector, options = {}) ->
     super(selector, options)
 
     @line = d3.svg.line()
@@ -11,7 +11,7 @@ class LineChart extends AbstractChart
       .y (d) => @y(extractY(d))
       .y0(@height)
 
-  drawCircles: (lines, data) ->
+  drawCircles: (lines, data, tooltips) ->
     circles = lines.selectAll("circle").data((line) ->
       data = []
 
@@ -29,11 +29,25 @@ class LineChart extends AbstractChart
       .attr("cx", (d) => @x(extractX(d)))
       .attr("cy", (d) => @y(extractY(d)))
 
-    circles.enter().append("circle")
+    newCircles = circles.enter().append("circle")
       .attr("class", (d) -> "dot #{d.label}")
       .attr("r", 5)
       .attr("cx", (d) => @x(extractX(d)))
       .attr("cy", (d) => @y(extractY(d)))
+
+    if tooltips
+      tip = (@tip ||= new Tooltip(document))
+      
+      newCircles
+        .on("mouseover", (d) ->
+          tip.html(d[1])
+          tip.show(this)
+        )
+
+        .on("mouseout", (d) ->
+          tip.hide()
+        )
+
 
     circles.exit().remove()
 
@@ -81,7 +95,9 @@ class LineChart extends AbstractChart
 
     @drawLines(newLines, lines)
     @drawAreas(newLines, lines) if @options.area
-    @drawCircles(lines, allPoints) if @options.dots
+    @drawCircles(lines, allPoints, @options.tooltips) if @options.dots
+
+
 
       
 
