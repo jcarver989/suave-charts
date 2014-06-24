@@ -53,9 +53,11 @@
           ] 
         })
 
+        var data2 = data1.map(function(d) { return [d[0], d[1] * 2] })
+
         chart = new LineChart("#chart", {
           xScale: d3.time.scale(),
-          area: false,
+          area: true,
           dots: true
         })
 
@@ -64,8 +66,8 @@
         .tickFormat(d3.time.format("%Y-%m-%d"))
 
       chart.draw([ 
-        { label: "line1", data: data1 }, 
-        { label: "line2", data: data2  }
+        { label: "line1", data: data1, area: true }, 
+        { label: "line2", data: data2, area: false, dots: false  }
       ])
     </script>
   </body>

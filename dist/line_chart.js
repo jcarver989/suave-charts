@@ -34,11 +34,13 @@ LineChart = (function(_super) {
     circles = lines.selectAll("circle").data(function(line) {
       var d, _i, _len, _ref;
       data = [];
-      _ref = line.data;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        d = _ref[_i];
-        d.label = line.label;
-        data.push(d);
+      if (line.dots !== false) {
+        _ref = line.data;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          d = _ref[_i];
+          d.label = line.label;
+          data.push(d);
+        }
       }
       return data;
     });
@@ -81,14 +83,18 @@ LineChart = (function(_super) {
   };
 
   LineChart.prototype.drawAreas = function(enter, update) {
-    enter.append("path").attr("class", function(d) {
+    enter.filter(function(d) {
+      return d.area !== false;
+    }).append("path").attr("class", function(d) {
       return "area " + d.label;
     }).attr("d", (function(_this) {
       return function(d) {
         return _this.area(d.data);
       };
     })(this));
-    return update.select(".area").transition().delay(200).attr("d", (function(_this) {
+    return update.filter(function(d) {
+      return d.area !== false;
+    }).select(".area").transition().delay(200).attr("d", (function(_this) {
       return function(d) {
         return _this.area(d.data);
       };

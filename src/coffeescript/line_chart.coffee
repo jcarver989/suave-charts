@@ -14,9 +14,11 @@ class LineChart extends AbstractChart
   drawCircles: (lines, data) ->
     circles = lines.selectAll("circle").data((line) ->
       data = []
-      for d in line.data
-        d.label = line.label
-        data.push(d)
+
+      if line.dots != false
+        for d in line.data
+          d.label = line.label
+          data.push(d)
 
       data
     )
@@ -49,11 +51,13 @@ class LineChart extends AbstractChart
 
   drawAreas: (enter, update) ->
     enter
+      .filter((d) -> d.area != false)
       .append("path")
       .attr("class", (d) -> "area #{d.label}")
       .attr("d", (d) => @area(d.data))
 
     update
+      .filter((d) -> d.area != false)
       .select(".area")
       .transition()
       .delay(200)
