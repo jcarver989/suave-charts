@@ -57,9 +57,13 @@ LineChart = (function(superClass) {
         return _this.y(extractY(d));
       };
     })(this));
-    circles.attr("transform", "translate(0, " + this.height + ")").attr("opacity", 0).transition().duration(500).delay((function(_this) {
+    circles.attr("transform", "translate(0, " + this.height + ")").attr("opacity", 0).transition().duration(250).delay((function(_this) {
       return function(d, i) {
-        return i * 50;
+        if (d.label === "line1") {
+          return i * 50;
+        } else {
+          return i * 20;
+        }
       };
     })(this)).attr("opacity", 1).attr("transform", "translate(0, 0)");
     if (tooltips) {
@@ -75,16 +79,26 @@ LineChart = (function(superClass) {
   };
 
   LineChart.prototype.drawLines = function(enter, update) {
-    var path, totalLength;
-    path = enter.append("path").attr("class", function(d) {
+    var nPaths, paths;
+    paths = enter.append("path").attr("class", function(d) {
       return "line " + d.label;
     }).attr("d", (function(_this) {
+      return function(d) {
+        return _this.line(d.data.map(function(datum) {
+          return [datum[0], 0];
+        }));
+      };
+    })(this));
+    nPaths = paths.size();
+    return paths.transition().duration(800).delay((function(_this) {
+      return function(d, i) {
+        return (nPaths - i) * 200;
+      };
+    })(this)).attr("d", (function(_this) {
       return function(d) {
         return _this.line(d.data);
       };
     })(this));
-    totalLength = path.node().getTotalLength() * 1.5;
-    return path.attr("stroke-dasharray", totalLength + " " + totalLength).attr("stroke-dashoffset", totalLength).transition().duration(1500).delay(500).attr("stroke-dashoffset", 0);
   };
 
   LineChart.prototype.drawAreas = function(enter, update) {
@@ -98,7 +112,7 @@ LineChart = (function(superClass) {
         return _this.area(d.data);
       };
     })(this));
-    return path.style("fill-opacity", 0).transition().delay(1000).style("fill-opacity", 1);
+    return path.style("fill-opacity", 0).transition().duration(500).delay(1000).style("fill-opacity", 1);
   };
 
   LineChart.prototype.draw = function(lines) {

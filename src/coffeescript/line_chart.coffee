@@ -36,8 +36,10 @@ class LineChart extends AbstractChart
       .attr("transform", "translate(0, #{@height})")
       .attr("opacity", 0)
       .transition()
-      .duration(500)
-      .delay((d, i) => i * 50)
+      .duration(250)
+      .delay((d, i) =>
+        if d.label == "line1" then i * 50 else i * 20
+      )
       .attr("opacity", 1)
       .attr("transform", "translate(0, 0)")
 
@@ -57,20 +59,20 @@ class LineChart extends AbstractChart
     circles.exit().remove()
 
   drawLines: (enter, update) ->
-    path = enter
+    paths = enter
       .append("path")
       .attr("class", (d) -> "line #{d.label}")
-      .attr("d", (d) => @line(d.data))
+      .attr("d", (d) => 
+        @line(d.data.map((datum) => [datum[0], 0]))
+      )
 
-    totalLength = path.node().getTotalLength() * 1.5
+    nPaths = paths.size()
 
-    path
-      .attr("stroke-dasharray", "#{totalLength} #{totalLength}")
-      .attr("stroke-dashoffset", totalLength)
+    paths
       .transition()
-      .duration(1500)
-      .delay(500)
-      .attr("stroke-dashoffset", 0)
+      .duration(800)
+      .delay((d, i) => (nPaths - i) * 200)
+      .attr("d", (d) => @line(d.data))
 
   drawAreas: (enter, update) ->
     path = enter
@@ -82,6 +84,7 @@ class LineChart extends AbstractChart
     path
       .style("fill-opacity", 0)
       .transition()
+      .duration(500)
       .delay(1000)
       .style("fill-opacity", 1)
 
