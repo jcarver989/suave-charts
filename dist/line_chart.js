@@ -84,7 +84,7 @@ LineChart = (function(superClass) {
       };
     })(this));
     totalLength = path.node().getTotalLength() * 1.5;
-    return path.attr("stroke-dasharray", totalLength + " " + totalLength).attr("stroke-dashoffset", totalLength).transition().duration(1500).delay(1000).attr("stroke-dashoffset", 0);
+    return path.attr("stroke-dasharray", totalLength + " " + totalLength).attr("stroke-dashoffset", totalLength).transition().duration(1500).delay(500).attr("stroke-dashoffset", 0);
   };
 
   LineChart.prototype.drawAreas = function(enter, update) {

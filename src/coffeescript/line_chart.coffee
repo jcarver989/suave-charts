@@ -69,7 +69,7 @@ class LineChart extends AbstractChart
       .attr("stroke-dashoffset", totalLength)
       .transition()
       .duration(1500)
-      .delay(1000)
+      .delay(500)
       .attr("stroke-dashoffset", 0)
 
   drawAreas: (enter, update) ->
