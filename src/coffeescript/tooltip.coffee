@@ -1,6 +1,6 @@
 class Tooltip
   constructor: (doc) ->
-    @cssClass = "tooltip"
+    @cssClass = "suave-tooltip"
     @tip = d3.select(doc.createElement('div'))
     @tip.attr("class", @cssClass)
     doc.body.appendChild(@tip.node())

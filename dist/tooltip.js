@@ -7,7 +7,7 @@ Tooltip = (function() {
     this.hide = bind(this.hide, this);
     this.show = bind(this.show, this);
     this.html = bind(this.html, this);
-    this.cssClass = "tooltip";
+    this.cssClass = "suave-tooltip";
     this.tip = d3.select(doc.createElement('div'));
     this.tip.attr("class", this.cssClass);
     doc.body.appendChild(this.tip.node());
