@@ -5,8 +5,20 @@
     <link rel="stylesheet" type="text/css" href="src/css/defaults.css">
 
     <style>
+      .dot {
+        stroke-width: 3px;
+      }
+
+      .line {
+        stroke-width: 5px;
+      }
+
       .line1.line {
         stroke: #00aadd;
+      }
+
+      .line1.area {
+        opacity: 0.2;
       }
 
       .line1.area, .line1.dot {
@@ -23,6 +35,10 @@
 
       .line1.dot:hover {
         fill: #000;
+      }
+
+      .axis {
+        display: none;
       }
 
       div {
@@ -44,13 +60,13 @@
     <script>
       var data1 = [
         ["Jan 1, 2014", 10],
-        ["Jan 2, 2014", 20],
-        ["Jan 3, 2014", 30],
+        ["Jan 2, 2014", 200],
+        ["Jan 3, 2014", 3000],
         ["Jan 4, 2014", 10],
-        ["Jan 5, 2014", 5],
-        ["Jan 6, 2014", 30],
-        ["Jan 7, 2014", 35],
-        ["Jan 8, 2014", 40]
+        ["Jan 5, 2014", 5000],
+        ["Jan 6, 2014", 400],
+        ["Jan 7, 2014", 2000],
+        ["Jan 8, 2014", 8000]
         ].map(function (d) { 
           return [
             new Date(d[0]), 
@@ -58,7 +74,7 @@
           ] 
         })
 
-        var data2 = data1.map(function(d) { return [d[0], d[1] * 2] })
+        var data2 = data1.map(function(d) { return [d[0], d[1] * 0.5] })
 
         chart = new LineChart("#chart", {
           xScale: d3.time.scale(),
@@ -72,8 +88,8 @@
         .tickFormat(d3.time.format("%Y-%m-%d"))
 
       chart.draw([ 
-        { label: "line1", data: data1  }, 
-        { label: "line2", data: data2, area: false, dots: false  }
+        { label: "line1", data: data1  }
+        
       ])
     </script>
   </body>

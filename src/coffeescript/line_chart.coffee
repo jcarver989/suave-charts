@@ -3,10 +3,12 @@ class LineChart extends AbstractChart
     super(selector, options)
 
     @line = d3.svg.line()
+      .interpolate("cardinal") # smoothing
       .x (d) => @x(extractX(d))
       .y (d) => @y(extractY(d))
 
     @area = d3.svg.area()
+      .interpolate("cardinal") # smoothing
       .x (d) => @x(extractX(d))
       .y (d) => @y(extractY(d))
       .y0(@height)
@@ -31,7 +33,7 @@ class LineChart extends AbstractChart
 
     newCircles = circles.enter().append("circle")
       .attr("class", (d) -> "dot #{d.label}")
-      .attr("r", 5)
+      .attr("r", 6)
       .attr("cx", (d) => @x(extractX(d)))
       .attr("cy", (d) => @y(extractY(d)))
 
