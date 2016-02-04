@@ -36,8 +36,8 @@ class LineChart extends AbstractChart
       .attr("transform", "translate(0, #{@height})")
       .attr("opacity", 0)
       .transition()
-      .duration(1000)
-      .delay((d, i) => i * 100)
+      .duration(500)
+      .delay((d, i) => i * 50)
       .attr("opacity", 1)
       .attr("transform", "translate(0, 0)")
 
@@ -68,8 +68,8 @@ class LineChart extends AbstractChart
       .attr("stroke-dasharray", "#{totalLength} #{totalLength}")
       .attr("stroke-dashoffset", totalLength)
       .transition()
-      .duration(2000)
-      .delay(2000)
+      .duration(1500)
+      .delay(1000)
       .attr("stroke-dashoffset", 0)
 
   drawAreas: (enter, update) ->
@@ -82,7 +82,7 @@ class LineChart extends AbstractChart
     path
       .style("fill-opacity", 0)
       .transition()
-      .delay(2500)
+      .delay(1000)
       .style("fill-opacity", 1)
 
 
