@@ -36,9 +36,10 @@ class LineChart extends AbstractChart
       .attr("transform", "translate(0, #{@height})")
       .attr("opacity", 0)
       .transition()
-      .duration(500)
+      .duration(1000)
       .delay((d, i) =>
-        if d.label == "line1" then i * 50 else i * 20
+        delay = if d.label == "line1" then i * 50 else i * 20
+        delay + 500
       )
       .attr("opacity", 1)
       .attr("transform", "translate(0, 0)")
@@ -70,8 +71,8 @@ class LineChart extends AbstractChart
 
     paths
       .transition()
-      .duration(800)
-      .delay((d, i) => (nPaths - i) * 200)
+      .duration(1300)
+      .delay((d, i) => (nPaths - i) * 200 + 500)
       .attr("d", (d) => @line(d.data))
 
   drawAreas: (enter, update) ->
@@ -84,8 +85,8 @@ class LineChart extends AbstractChart
     path
       .style("fill-opacity", 0)
       .transition()
-      .duration(500)
-      .delay(1000)
+      .duration(1000)
+      .delay(1000 + 500)
       .style("fill-opacity", 1)
 
 

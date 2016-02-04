@@ -57,13 +57,11 @@ LineChart = (function(superClass) {
         return _this.y(extractY(d));
       };
     })(this));
-    circles.attr("transform", "translate(0, " + this.height + ")").attr("opacity", 0).transition().duration(500).delay((function(_this) {
+    circles.attr("transform", "translate(0, " + this.height + ")").attr("opacity", 0).transition().duration(1000).delay((function(_this) {
       return function(d, i) {
-        if (d.label === "line1") {
-          return i * 50;
-        } else {
-          return i * 20;
-        }
+        var delay;
+        delay = d.label === "line1" ? i * 50 : i * 20;
+        return delay + 500;
       };
     })(this)).attr("opacity", 1).attr("transform", "translate(0, 0)");
     if (tooltips) {
@@ -90,9 +88,9 @@ LineChart = (function(superClass) {
       };
     })(this));
     nPaths = paths.size();
-    return paths.transition().duration(800).delay((function(_this) {
+    return paths.transition().duration(1300).delay((function(_this) {
       return function(d, i) {
-        return (nPaths - i) * 200;
+        return (nPaths - i) * 200 + 500;
       };
     })(this)).attr("d", (function(_this) {
       return function(d) {
@@ -112,7 +110,7 @@ LineChart = (function(superClass) {
         return _this.area(d.data);
       };
     })(this));
-    return path.style("fill-opacity", 0).transition().duration(500).delay(1000).style("fill-opacity", 1);
+    return path.style("fill-opacity", 0).transition().duration(1000).delay(1000 + 500).style("fill-opacity", 1);
   };
 
   LineChart.prototype.draw = function(lines) {
