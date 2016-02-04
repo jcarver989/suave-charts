@@ -1,7 +1,8 @@
 class Tooltip
   constructor: (doc) ->
+    @cssClass = "tooltip"
     @tip = d3.select(doc.createElement('div'))
-    @tip.attr("class", "d3-tip")
+    @tip.attr("class", @cssClass)
     doc.body.appendChild(@tip.node())
 
   html: (content) => 
@@ -9,7 +10,7 @@ class Tooltip
 
   show: (node) =>
     offset = @offset(node)    
-    @tip.attr("class", "d3-tip show")
+    @tip.attr("class", "#{@cssClass} show")
     @tip.style({
       "position" : "absolute",
       "top" : "#{offset.top}px",
@@ -17,7 +18,7 @@ class Tooltip
     })
 
   hide: () =>
-    @tip.attr("class", "d3-tip")
+    @tip.attr("class", @cssClass)
 
   offset: (node) ->
     nodeCoords = node.getBoundingClientRect()

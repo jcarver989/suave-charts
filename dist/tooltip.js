@@ -7,8 +7,9 @@ Tooltip = (function() {
     this.hide = bind(this.hide, this);
     this.show = bind(this.show, this);
     this.html = bind(this.html, this);
+    this.cssClass = "tooltip";
     this.tip = d3.select(doc.createElement('div'));
-    this.tip.attr("class", "d3-tip");
+    this.tip.attr("class", this.cssClass);
     doc.body.appendChild(this.tip.node());
   }
 
@@ -19,7 +20,7 @@ Tooltip = (function() {
   Tooltip.prototype.show = function(node) {
     var offset;
     offset = this.offset(node);
-    this.tip.attr("class", "d3-tip show");
+    this.tip.attr("class", this.cssClass + " show");
     return this.tip.style({
       "position": "absolute",
       "top": offset.top + "px",
@@ -28,7 +29,7 @@ Tooltip = (function() {
   };
 
   Tooltip.prototype.hide = function() {
-    return this.tip.attr("class", "d3-tip");
+    return this.tip.attr("class", this.cssClass);
   };
 
   Tooltip.prototype.offset = function(node) {
