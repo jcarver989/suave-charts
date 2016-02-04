@@ -34,27 +34,18 @@ LineChart = (function(superClass) {
   LineChart.prototype.drawCircles = function(lines, data, tooltips) {
     var circles, newCircles, tip;
     circles = lines.selectAll("circle").data(function(line) {
-      var d, i, len, ref;
+      var d, j, len, ref;
       data = [];
       if (line.dots !== false) {
         ref = line.data;
-        for (i = 0, len = ref.length; i < len; i++) {
-          d = ref[i];
+        for (j = 0, len = ref.length; j < len; j++) {
+          d = ref[j];
           d.label = line.label;
           data.push(d);
         }
       }
       return data;
     });
-    circles.transition().delay(200).attr("cx", (function(_this) {
-      return function(d) {
-        return _this.x(extractX(d));
-      };
-    })(this)).attr("cy", (function(_this) {
-      return function(d) {
-        return _this.y(extractY(d));
-      };
-    })(this));
     newCircles = circles.enter().append("circle").attr("class", function(d) {
       return "dot " + d.label;
     }).attr("r", 6).attr("cx", (function(_this) {
@@ -66,9 +57,14 @@ LineChart = (function(superClass) {
         return _this.y(extractY(d));
       };
     })(this));
+    circles.attr("transform", "translate(0, " + this.height + ")").attr("opacity", 0).transition().duration(1000).delay((function(_this) {
+      return function(d, i) {
+        return i * 100 + 1000;
+      };
+    })(this)).attr("opacity", 1).attr("transform", "translate(0, 0)");
     if (tooltips) {
       tip = (this.tip || (this.tip = new Tooltip(document)));
-      newCircles.on("mouseover", function(d) {
+      circles.on("mouseover", function(d) {
         tip.html(d[1]);
         return tip.show(this);
       }).on("mouseout", function(d) {
@@ -79,22 +75,21 @@ LineChart = (function(superClass) {
   };
 
   LineChart.prototype.drawLines = function(enter, update) {
-    enter.append("path").attr("class", function(d) {
+    var path, totalLength;
+    path = enter.append("path").attr("class", function(d) {
       return "line " + d.label;
     }).attr("d", (function(_this) {
       return function(d) {
         return _this.line(d.data);
       };
     })(this));
-    return update.select(".line").transition().delay(200).attr("d", (function(_this) {
-      return function(d) {
-        return _this.line(d.data);
-      };
-    })(this));
+    totalLength = path.node().getTotalLength();
+    return path.attr("stroke-dasharray", totalLength + " " + totalLength).attr("stroke-dashoffset", totalLength).transition().duration(2000).attr("stroke-dashoffset", 0);
   };
 
   LineChart.prototype.drawAreas = function(enter, update) {
-    enter.filter(function(d) {
+    var path;
+    path = enter.filter(function(d) {
       return d.area !== false;
     }).append("path").attr("class", function(d) {
       return "area " + d.label;
@@ -103,22 +98,16 @@ LineChart = (function(superClass) {
         return _this.area(d.data);
       };
     })(this));
-    return update.filter(function(d) {
-      return d.area !== false;
-    }).select(".area").transition().delay(200).attr("d", (function(_this) {
-      return function(d) {
-        return _this.area(d.data);
-      };
-    })(this));
+    return path.style("fill-opacity", 0).transition().delay(800).style("fill-opacity", 1);
   };
 
   LineChart.prototype.draw = function(lines) {
     var allPoints, flattened, line, newLines;
     allPoints = (function() {
-      var i, len, results;
+      var j, len, results;
       results = [];
-      for (i = 0, len = lines.length; i < len; i++) {
-        line = lines[i];
+      for (j = 0, len = lines.length; j < len; j++) {
+        line = lines[j];
         results.push(line.data);
       }
       return results;

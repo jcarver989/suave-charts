@@ -25,22 +25,26 @@ class LineChart extends AbstractChart
       data
     )
 
-    circles.
-      transition()
-      .delay(200)
-      .attr("cx", (d) => @x(extractX(d)))
-      .attr("cy", (d) => @y(extractY(d)))
-
     newCircles = circles.enter().append("circle")
       .attr("class", (d) -> "dot #{d.label}")
       .attr("r", 6)
       .attr("cx", (d) => @x(extractX(d)))
       .attr("cy", (d) => @y(extractY(d)))
 
+
+    circles
+      .attr("transform", "translate(0, #{@height})")
+      .attr("opacity", 0)
+      .transition()
+      .duration(1000)
+      .delay((d, i) => i * 100 + 1000)
+      .attr("opacity", 1)
+      .attr("transform", "translate(0, 0)")
+
     if tooltips
       tip = (@tip ||= new Tooltip(document))
       
-      newCircles
+      circles
         .on("mouseover", (d) ->
           tip.html(d[1])
           tip.show(this)
@@ -50,34 +54,36 @@ class LineChart extends AbstractChart
           tip.hide()
         )
 
-
     circles.exit().remove()
 
   drawLines: (enter, update) ->
-    enter
+    path = enter
       .append("path")
       .attr("class", (d) -> "line #{d.label}")
       .attr("d", (d) => @line(d.data))
 
-    update
-      .select(".line")
+    totalLength = path.node().getTotalLength()
+
+    path
+      .attr("stroke-dasharray", "#{totalLength} #{totalLength}")
+      .attr("stroke-dashoffset", totalLength)
       .transition()
-      .delay(200)
-      .attr("d", (d) => @line(d.data))
+      .duration(2000)
+      .attr("stroke-dashoffset", 0)
 
   drawAreas: (enter, update) ->
-    enter
+    path = enter
       .filter((d) -> d.area != false)
       .append("path")
       .attr("class", (d) -> "area #{d.label}")
       .attr("d", (d) => @area(d.data))
 
-    update
-      .filter((d) -> d.area != false)
-      .select(".area")
+    path
+      .style("fill-opacity", 0)
       .transition()
-      .delay(200)
-      .attr("d", (d) => @area(d.data))
+      .delay(800)
+      .style("fill-opacity", 1)
+
 
   draw: (lines) ->
     allPoints = (line.data for line in lines)
@@ -87,10 +93,12 @@ class LineChart extends AbstractChart
 
     @drawAxes()
 
-    lines = @svg.selectAll(".lineGroup")
+    lines = @svg
+      .selectAll(".lineGroup")
       .data(lines, (d) -> d.label)
     
-    newLines = lines.enter().append("g")
+    newLines = lines
+      .enter().append("g")
       .attr("class", "lineGroup")
 
     lines.exit().remove()
