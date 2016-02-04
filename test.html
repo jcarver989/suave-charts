@@ -58,7 +58,7 @@
     <script src="dist/line_chart.js"></script>
     <script src="dist/scatterplot.js"></script>
     <script>
-      var data1 = [
+       var data1 = [
         ["Jan 1, 2014", 10],
         ["Jan 2, 2014", 200],
         ["Jan 3, 2014", 3000],
@@ -66,7 +66,7 @@
         ["Jan 5, 2014", 5000],
         ["Jan 6, 2014", 400],
         ["Jan 7, 2014", 2000],
-        ["Jan 8, 2014", 8000]
+        ["Jan 8, 2014", 6000]
         ].map(function (d) { 
           return [
             new Date(d[0]), 
@@ -74,7 +74,7 @@
           ] 
         })
 
-        var data2 = data1.map(function(d) { return [d[0], d[1] * 0.5] })
+        var data2 = data1.map(function(d) { return [d[0], d[1] * 3] })
 
         chart = new LineChart("#chart", {
           xScale: d3.time.scale(),
@@ -88,8 +88,8 @@
         .tickFormat(d3.time.format("%Y-%m-%d"))
 
       chart.draw([ 
-        { label: "line1", data: data1  }
-        
+        { label: "line1", data: data1  },
+        { label: "line2", data: data2, area: false  }
       ])
     </script>
   </body>
