@@ -57,7 +57,7 @@ LineChart = (function(superClass) {
         return _this.y(extractY(d));
       };
     })(this));
-    circles.attr("transform", "translate(0, " + this.height + ")").attr("opacity", 0).transition().duration(250).delay((function(_this) {
+    circles.attr("transform", "translate(0, " + this.height + ")").attr("opacity", 0).transition().duration(500).delay((function(_this) {
       return function(d, i) {
         if (d.label === "line1") {
           return i * 50;

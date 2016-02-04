@@ -36,7 +36,7 @@ class LineChart extends AbstractChart
       .attr("transform", "translate(0, #{@height})")
       .attr("opacity", 0)
       .transition()
-      .duration(250)
+      .duration(500)
       .delay((d, i) =>
         if d.label == "line1" then i * 50 else i * 20
       )
