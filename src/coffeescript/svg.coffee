@@ -1,21 +1,19 @@
-createSvg = (d3, selector, margin) ->
+class Svg
+  constructor: (selector, margin) ->
+    @domElement = document.querySelector(selector) 
+    @container = d3
+      .select(@domElement)
+      .append("svg")
+      .attr('preserveAspectRatio','xMinYMin')
 
-  elem = document.querySelector(selector)
-  elemHeight = elem.offsetHeight
-  elemWidth = elem.offsetWidth
-
-  width = elemWidth - margin.left - margin.right
-  height = elemHeight - margin.bottom - margin.top
-
-  svg = d3.select(selector).append("svg")
-    .attr('preserveAspectRatio','xMinYMin')
-    .attr("width", elemWidth)
-    .attr("height", elemHeight)
-    .append("g")
+    @chart = @container.
+      append("g")
       .attr("transform", "translate(#{margin.left},#{margin.top})")
 
-  [svg, width, height]
-
-extractX = (d) -> d[0]
-extractY = (d) -> d[1]
-
+   getSize: () ->
+    [@domElement.offsetWidth, @domElement.offsetHeight]
+    
+   setSize: (width, height) ->
+    @container
+      .attr("width", width)
+      .attr("height", height)

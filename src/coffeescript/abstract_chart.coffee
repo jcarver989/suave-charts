@@ -1,44 +1,29 @@
 class AbstractChart
   constructor: (selector, options = {}) ->
+    @options = @mergeOptions(defaultOptions, options)
+    @svg = new Svg(selector, @options.margin)
+    @scales = Scales.fromString(@options.xScale, @options.yScale)
+    @axes = new Axes(@svg.chart, @scales, @options)
+    
+    [w, h] = @options.aspectRatio.split(":")
+    @aspectRatio = [parseInt(w), parseInt(h)]
+    @updateDimensions()
 
+  mergeOptions: (defaults, userSpecified) ->
     opts = {}
-    for key, val of defaultOptions
-      opts[key] = defaultOptions[key]
+    for key, val of defaults
+      opts[key] = defaults[key]
 
-    for key, val of options
-      opts[key] = options[key]
+    for key, val of userSpecified
+      opts[key] = userSpecified[key]
 
-    @options = opts
-
-    # create canvas
-    [@svg, @width, @height] = createSvg(d3, selector, @options.margin)
-
-    # scales
-    @x = opts.xScale.range [0, @width]
-    @y = opts.yScale.range [@height, 0]
-
-    # axes
-    @xAxis = d3.svg.axis()
-    .scale(@x)
-    .orient("bottom")
-    .tickPadding(20)
-
-    @yAxis = d3.svg.axis()
-      .scale(@y)
-      .orient("left")
-      .tickPadding(20)
-
-    if opts.grid
-      @xAxis.tickSize(-@height)
-      @yAxis.tickSize(-@width)
-
-    @xAxisSelection = @svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + @height + ")")
-
-    @yAxisSelection = @svg.append("g")
-      .attr("class", "y axis")
-
-  drawAxes: () ->
-    @xAxisSelection.call @xAxis
-    @yAxisSelection.call @yAxis
+    opts
+    
+  updateDimensions: () =>
+    [w, h] = @svg.getSize()
+    newHeight = w / @aspectRatio[0] * @aspectRatio[1]
+    margin = @options.margin
+    @width = w - margin.left - margin.right
+    @height = newHeight - margin.bottom - margin.top
+    @scales.setRanges(@width, @height)
+    @svg.setSize(w, newHeight)

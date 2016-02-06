@@ -1,118 +1,87 @@
+# TODOS:
+# xAxis auto detect Dates
+# multi axis
+# Bar charts
+# log scale
+
+
+# transitions/animations
+
 class LineChart extends AbstractChart
   constructor: (selector, options = {}) ->
     super(selector, options)
-
+    # @line and @area are simply functions that know how to 
+    # draw the SVG path's 'd' attribute. ex @line([[x, y], [x, y]]) => path string
     @line = d3.svg.line()
-      .interpolate("cardinal") # smoothing
-      .x (d) => @x(extractX(d))
-      .y (d) => @y(extractY(d))
+      .x(@scales.scaleX)
+      .y(@scales.scaleY)
 
     @area = d3.svg.area()
-      .interpolate("cardinal") # smoothing
-      .x (d) => @x(extractX(d))
-      .y (d) => @y(extractY(d))
-      .y0(@height)
+      .x(@scales.scaleX)
+      .y(@scales.scaleY)
 
-  drawCircles: (lines, data, tooltips) ->
-    circles = lines.selectAll("circle").data((line) ->
-      data = []
+    d3.select(window).on('resize', @render)
 
-      if line.dots != false
-        for d in line.data
-          d.label = line.label
-          data.push(d)
+  enterLines: (enter) ->
+    enter
+      .append("path")
+      .attr("class", (line) -> "line #{line.label}")
 
-      data
+  enterAreas: (enter) ->
+    enter
+      .filter((line) -> line.area == true)
+      .append("path")
+      .attr("class", (line) -> "area #{line.label}")
+
+  createTooltip: () ->
+    tip = (@tip ||= new Tooltip(document))
+    @dots.on("mouseover", (d) ->
+      tip.html(d[1])
+      tip.show(this))
+    @dots.on("mouseout", (d) -> tip.hide())
+
+  render: (isUpdate = true) =>
+    @updateDimensions() if isUpdate
+    @axes.draw(@width, @height)
+    @lines.attr("d", (line) =>
+      @line.interpolate(@chooseInterpolation(line))
+      @line(line.data)
     )
+    @area.y0(@height)
+    @areas.attr("d", (line) =>
+      @area.interpolate(@chooseInterpolation(line))
+      @area(line.data)
+    )
+    @dots
+      .attr("cx", @scales.scaleX)
+      .attr("cy", @scales.scaleY)
 
-    newCircles = circles.enter().append("circle")
-      .attr("class", (d) -> "dot #{d.label}")
-      .attr("r", 6)
-      .attr("cx", (d) => @x(extractX(d)))
-      .attr("cy", (d) => @y(extractY(d)))
-
-
-    circles
-      .attr("transform", "translate(0, #{@height})")
-      .attr("opacity", 0)
-      .transition()
-      .duration(1000)
-      .delay((d, i) =>
-        delay = if d.label == "line1" then i * 50 else i * 20
-        delay + 500
-      )
-      .attr("opacity", 1)
-      .attr("transform", "translate(0, 0)")
-
-    if tooltips
-      tip = (@tip ||= new Tooltip(document))
-      
-      circles
-        .on("mouseover", (d) ->
-          tip.html(d[1])
-          tip.show(this)
-        )
-
-        .on("mouseout", (d) ->
-          tip.hide()
-        )
-
-    circles.exit().remove()
-
-  drawLines: (enter, update) ->
-    paths = enter
-      .append("path")
-      .attr("class", (d) -> "line #{d.label}")
-      .attr("d", (d) => 
-        @line(d.data.map((datum) => [datum[0], 0]))
-      )
-
-    nPaths = paths.size()
-
-    paths
-      .transition()
-      .duration(1300)
-      .delay((d, i) => (nPaths - i) * 200 + 500)
-      .attr("d", (d) => @line(d.data))
-
-  drawAreas: (enter, update) ->
-    path = enter
-      .filter((d) -> d.area != false)
-      .append("path")
-      .attr("class", (d) -> "area #{d.label}")
-      .attr("d", (d) => @area(d.data))
-
-    path
-      .style("fill-opacity", 0)
-      .transition()
-      .duration(1000)
-      .delay(1000 + 500)
-      .style("fill-opacity", 1)
-
+  chooseInterpolation: (line) -> if line.smooth then "cardinal" else "linear"
 
   draw: (lines) ->
-    allPoints = (line.data for line in lines)
-    flattened = d3.merge(allPoints)
-    @x.domain d3.extent(flattened, extractX)
-    @y.domain [0, d3.max(flattened, extractY)]
+    allPoints = d3.merge((line.data for line in lines))
+    @scales.setDomains(allPoints)
 
-    @drawAxes()
-
-    lines = @svg
-      .selectAll(".lineGroup")
-      .data(lines, (d) -> d.label)
-    
-    newLines = lines
+    # bind the line's data to the dom
+    @lineGroups = @svg.chart.selectAll(".lineGroup").data(lines, (line) -> line.label)
+    newGroups = @lineGroups
       .enter().append("g")
       .attr("class", "lineGroup")
 
-    lines.exit().remove()
+    @enterLines(newGroups)
+    @enterAreas(newGroups)
+    @lines = @lineGroups.selectAll(".line")
+    @areas = @lineGroups.selectAll(".area")
+    @dots =  @lineGroups.selectAll(".dot")
 
-    @drawLines(newLines, lines)
-    @drawAreas(newLines, lines) if @options.area
-    @drawCircles(lines, allPoints, @options.tooltips) if @options.dots
+    @dots = @dots.data((line) ->
+      return [] if line.dots == false
+      ([d[0], d[1], line.label] for d in line.data)
+    )
 
+    @dots.enter().append("circle")
+      .attr("class", (d) -> "dot #{d[2]}")
+      .attr("r", @options.dotSize)
 
-
-      
-
+    @createTooltip() if @options.tooltips
+    @render(false)
