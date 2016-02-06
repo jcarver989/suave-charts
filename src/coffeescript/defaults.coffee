@@ -14,7 +14,7 @@ defaultOptions = {
     left: 80
   }
 
-  # Optional arguments: 
+  # Other arguments: 
   #xTickInterval: "seconds", "days", "minutes", "months", "years"
   #xTickFormat: "%Y-%m-%d"
 }

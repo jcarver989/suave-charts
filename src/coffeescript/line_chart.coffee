@@ -1,12 +1,8 @@
 # TODOS:
-# xAxis auto detect Dates
 # multi axis
 # Bar charts
-# log scale
-
 
 # transitions/animations
-
 class LineChart extends AbstractChart
   constructor: (selector, options = {}) ->
     super(selector, options)

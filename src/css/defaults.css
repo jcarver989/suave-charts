@@ -1,5 +1,6 @@
-/* Axes */
-
+/* ==================
+Axes 
+===================== */
 .axis path,
 .axis line {
   fill: none;
@@ -8,7 +9,9 @@
   shape-rendering: crispEdges;
 }
 
-/* Line Charts */
+/* ==================
+Dots 
+===================== */
 .dot {
   stroke: #fff;
   stroke-width: 3px;
@@ -18,6 +21,9 @@
   fill: #000;
 }
 
+/* ==================
+Line Charts
+===================== */
 .line {
   fill: none;
   stroke-width: 2px;
@@ -27,8 +33,9 @@
   stroke: none;
 }
 
-
-
+/* ==================
+Tooltips 
+===================== */
 .suave-tooltip {
   position: absolute;
   height: 30px;
@@ -43,16 +50,12 @@
   background: rgba(0, 0, 0, 0.8);
   color: #fff;
   border-radius: 4px;
-  pointer-events: none;
   opacity: 0;
   box-sizing: border-box;
   pointer-events: none;
 }
 
-
 .suave-tooltip.show {
-  -webkit-transition: opacity 0.25s;
-  -moz-transition: opacity 0.25s;
   transition: opacity 0.25s;
   opacity: 1;
 }
