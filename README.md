@@ -1,12 +1,9 @@
 # Suave Charts
 Easy, reusable charts built on d3.js. All of the power, none of the complexity.
 
-## Getting Started
+## Getting Started, Easy as 1, 2, 3
 
-Using Suave Charts is easy as 1,2,3: 
-
-
-### 1. Include d3, suave-charts.min.js and suave-charts.css in your HTML
+#### 1. Include d3, suave-charts.min.js and suave-charts.css in your HTML
 
 ```html
     <!doctype html>
@@ -19,7 +16,7 @@ Using Suave Charts is easy as 1,2,3:
     </html>
 ```
 
-### 2. Draw a chart:
+#### 2. Draw a chart:
 
 ```html
       <body>
@@ -33,7 +30,7 @@ Using Suave Charts is easy as 1,2,3:
 ```
 
 
-### 3. Customize the chart with CSS
+#### 3. Customize the chart with CSS
 
 ```css
 /* We labeled the line in the chart above "line1" so the SVG path for the line gets a CSS class of the same name */
