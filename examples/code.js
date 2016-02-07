@@ -3,6 +3,7 @@ function codify(selector, targetSelector, preClass) {
   var element = document.querySelector(selector)
   var target = document.querySelector(targetSelector)
   var html = element.innerHTML
+            .trim()
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")

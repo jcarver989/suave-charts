@@ -40,12 +40,12 @@ Scales = (function() {
   Scales.prototype.setDomains = function(points) {
     this.x.domain(d3.extent(points, function(d) {
       return d[0];
-    }));
+    })).nice();
     return this.y.domain([
       0, d3.max(points, function(d) {
         return d[1];
       })
-    ]);
+    ]).nice();
   };
 
   Scales.prototype.setRanges = function(width, height) {

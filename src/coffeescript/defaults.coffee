@@ -4,7 +4,7 @@ defaultOptions = {
   smoothLines: false # smooth chart lines 
   tooltips: true
   aspectRatio: "16:9"
-  tickPadding: 20
+  tickPadding: 10
   dotSize: 6
   grid: true
   margin: {

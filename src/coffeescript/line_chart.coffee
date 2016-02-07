@@ -52,30 +52,45 @@ class LineChart extends AbstractChart
       .attr("cx", @scales.scaleX)
       .attr("cy", @scales.scaleY)
 
-  chooseInterpolation: (line) -> if line.smooth then "cardinal" else "linear"
+  chooseInterpolation: (line) -> if line.smooth then "monotone" else "linear"
 
   draw: (lines) ->
     allPoints = d3.merge((line.data for line in lines))
     @scales.setDomains(allPoints)
 
     # bind the line's data to the dom
-    @lineGroups = @svg.chart.selectAll(".lineGroup").data(lines, (line) -> line.label)
-    newGroups = @lineGroups
-      .enter().append("g")
+    @lineGroups = @svg.chart
+      .selectAll(".lineGroup")
+      .data(lines, (line) -> line.label)
+
+    newGroups = @lineGroups.enter()
+      .append("g")
       .attr("class", "lineGroup")
 
     @enterLines(newGroups)
     @enterAreas(newGroups)
     @lines = @lineGroups.selectAll(".line")
     @areas = @lineGroups.selectAll(".area")
-    @dots =  @lineGroups.selectAll(".dot")
 
-    @dots = @dots.data((line) ->
-      return [] if line.dots == false
-      ([d[0], d[1], line.label] for d in line.data)
-    )
+    
+    # To ensure dots are not convered up by a line/area we
+    # rebind all the data to .dotGroups and add them to the DOM
+    # after everything else since SVG has no z-index 
+    @dotGroups = @svg
+      .chart
+      .selectAll(".dotGroup")
+      .data(lines, (line) -> line.label)
 
-    @dots.enter().append("circle")
+    @dotGroups.enter().append("g").attr("class", "dotGroup")
+    @dots = @dotGroups
+      .selectAll(".dot")
+      .data((line) ->
+        return [] if line.dots == false
+        ([d[0], d[1], line.label] for d in line.data)
+      )
+
+    @dots.enter()
+      .append("circle")
       .attr("class", (d) -> "dot #{d[2]}")
       .attr("r", @options.dotSize)
 

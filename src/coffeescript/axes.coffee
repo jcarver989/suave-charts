@@ -26,7 +26,7 @@ class Axes
         when "years" then d3.time.years
       @xAxis.ticks(ticks)
 
-    else if @options.ticks
+    else if @options.ticks? && @options.ticks > 0
       @xAxis.ticks(@options.ticks)
 
     if @options.xTickFormat

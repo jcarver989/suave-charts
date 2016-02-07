@@ -14,8 +14,8 @@ class Scales
   scaleY: (pair) => @y(pair[1])
 
   setDomains: (points) =>
-    @x.domain d3.extent(points, (d) -> d[0])
-    @y.domain [0, d3.max(points, (d) -> d[1])]
+    @x.domain(d3.extent(points, (d) -> d[0])).nice()
+    @y.domain([0, d3.max(points, (d) -> d[1])]).nice()
 
   setRanges: (width, height) =>
     @x.range [0, width]

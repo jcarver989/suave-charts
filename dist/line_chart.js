@@ -70,7 +70,7 @@ LineChart = (function(superClass) {
 
   LineChart.prototype.chooseInterpolation = function(line) {
     if (line.smooth) {
-      return "cardinal";
+      return "monotone";
     } else {
       return "linear";
     }
@@ -96,8 +96,11 @@ LineChart = (function(superClass) {
     this.enterAreas(newGroups);
     this.lines = this.lineGroups.selectAll(".line");
     this.areas = this.lineGroups.selectAll(".area");
-    this.dots = this.lineGroups.selectAll(".dot");
-    this.dots = this.dots.data(function(line) {
+    this.dotGroups = this.svg.chart.selectAll(".dotGroup").data(lines, function(line) {
+      return line.label;
+    });
+    this.dotGroups.enter().append("g").attr("class", "dotGroup");
+    this.dots = this.dotGroups.selectAll(".dot").data(function(line) {
       var d, i, len, ref, results;
       if (line.dots === false) {
         return [];

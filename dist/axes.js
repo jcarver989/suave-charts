@@ -35,7 +35,7 @@ Axes = (function() {
         }
       }).call(this);
       this.xAxis.ticks(ticks);
-    } else if (this.options.ticks) {
+    } else if ((this.options.ticks != null) && this.options.ticks > 0) {
       this.xAxis.ticks(this.options.ticks);
     }
     if (this.options.xTickFormat) {
