@@ -1,3 +1,13 @@
+mergeOptions = (defaults, userSpecified) ->
+  opts = {}
+  for key, val of defaults
+    opts[key] = defaults[key]
+
+  for key, val of userSpecified
+    opts[key] = userSpecified[key]
+
+  opts
+
 defaultOptions = {
   xScale: "linear" # linear, log, time
   yScale: "linear" # linear, log

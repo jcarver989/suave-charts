@@ -1,20 +1,28 @@
 # TODOS:
 # multi axis
-# Bar charts
+# Grouped bar charts
+# Column charts
 # transitions/animations
 
 class LineChart extends AbstractChart
   constructor: (selector, options = {}) ->
     super(selector, options)
+    
+    @x = Scales.fromString(@options.xScale)
+    @y = Scales.fromString(@options.yScale)
+    @axes = new Axes(@svg.chart, @x, @y, @options)
+    
     # @line and @area are simply functions that know how to 
     # draw the SVG path's 'd' attribute. ex @line([[x, y], [x, y]]) => path string
+    @scaleX = (d) => @x(d[0])
+    @scaleY = (d) => @y(d[1])
     @line = d3.svg.line()
-      .x(@scales.scaleX)
-      .y(@scales.scaleY)
+      .x(@scaleX)
+      .y(@scaleY)
 
     @area = d3.svg.area()
-      .x(@scales.scaleX)
-      .y(@scales.scaleY)
+      .x(@scaleX)
+      .y(@scaleY)
 
     d3.select(window).on('resize', @render)
 
@@ -37,7 +45,10 @@ class LineChart extends AbstractChart
     @dots.on("mouseout", (d) -> tip.hide())
 
   render: (isUpdate = true) =>
-    @updateDimensions() if isUpdate
+    @svg.resize()
+    @x.range([0, @svg.width])
+    @y.range([@svg.height, 0])
+
     @axes.draw(@svg.width, @svg.height)
     @lines.attr("d", (line) =>
       @line.interpolate(@chooseInterpolation(line))
@@ -49,14 +60,15 @@ class LineChart extends AbstractChart
       @area(line.data)
     )
     @dots
-      .attr("cx", @scales.scaleX)
-      .attr("cy", @scales.scaleY)
+      .attr("cx", @scaleX)
+      .attr("cy", @scaleY)
 
   chooseInterpolation: (line) -> if line.smooth then "monotone" else "linear"
 
   draw: (lines) ->
     allPoints = d3.merge((line.data for line in lines))
-    @scales.setDomains(allPoints)
+    @x.domain(d3.extent(allPoints, (d) -> d[0])).nice()
+    @y.domain([0, d3.max(allPoints, (d) -> d[1])]).nice()
 
     # bind the line's data to the dom
     @lineGroups = @svg.chart
@@ -72,7 +84,6 @@ class LineChart extends AbstractChart
     @lines = @lineGroups.selectAll(".line")
     @areas = @lineGroups.selectAll(".area")
 
-    
     # To ensure dots are not convered up by a line/area we
     # rebind all the data to .dotGroups and add them to the DOM
     # after everything else since SVG has no z-index 

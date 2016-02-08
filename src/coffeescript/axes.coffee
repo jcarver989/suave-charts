@@ -1,13 +1,13 @@
 class Axes
-  constructor: (svg, scales, @options) ->
+  constructor: (svg, xScale, yScale, @options) ->
     @xAxisSelection = svg.append("g")
       .attr("class", "x axis")
 
     @yAxisSelection = svg.append("g")
       .attr("class", "y axis")
 
-    @xAxis = @newAxis(scales.x, "bottom")
-    @yAxis = @newAxis(scales.y, "left")
+    @xAxis = @newAxis(xScale, "bottom")
+    @yAxis = @newAxis(yScale, "left")
 
   draw: (width, height) ->
     @xAxisSelection.attr("transform", "translate(0,#{height})")
@@ -35,7 +35,7 @@ class Axes
     @xAxisSelection.call @xAxis
     @yAxisSelection.call @yAxis
 
-  newAxis: (scale, orientation) ->
+  newAxis: (scale, orientation) =>
     d3.svg.axis()
       .scale(scale)
       .orient(orientation)
