@@ -1,12 +1,9 @@
 class AbstractChart
   constructor: (selector, options = {}) ->
     @options = @mergeOptions(defaultOptions, options)
-    @svg = new Svg(selector, @options.margin)
+    @svg = new Svg(selector, @options.aspectRatio, @options.margin)
     @scales = Scales.fromString(@options.xScale, @options.yScale)
     @axes = new Axes(@svg.chart, @scales, @options)
-    
-    [w, h] = @options.aspectRatio.split(":")
-    @aspectRatio = [parseInt(w), parseInt(h)]
     @updateDimensions()
 
   mergeOptions: (defaults, userSpecified) ->
@@ -20,10 +17,5 @@ class AbstractChart
     opts
     
   updateDimensions: () =>
-    [w, h] = @svg.getSize()
-    newHeight = w / @aspectRatio[0] * @aspectRatio[1]
-    margin = @options.margin
-    @width = w - margin.left - margin.right
-    @height = newHeight - margin.bottom - margin.top
-    @scales.setRanges(@width, @height)
-    @svg.setSize(w, newHeight)
+    @svg.resize()
+    @scales.setRanges(@svg.width, @svg.height)

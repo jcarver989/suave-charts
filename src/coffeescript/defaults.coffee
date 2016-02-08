@@ -18,3 +18,16 @@ defaultOptions = {
   #xTickInterval: "seconds", "days", "minutes", "months", "years"
   #xTickFormat: "%Y-%m-%d"
 }
+
+
+defaultBarOptions = {
+  aspectRatio: "16:9"
+
+  margin: {
+    top: 50,
+    bottom: 50,
+    right: 80,
+    left: 80
+  }
+}
+

@@ -1,6 +1,9 @@
 class Svg
-  constructor: (selector, margin) ->
-    @domElement = document.querySelector(selector) 
+  constructor: (selector, aspectRatio, @margin) ->
+    [w, h] = aspectRatio.split(":")
+    @aspectRatio = [parseInt(w), parseInt(h)]
+
+    @domElement = document.querySelector(selector)
     @container = d3
       .select(@domElement)
       .append("svg")
@@ -8,12 +11,15 @@ class Svg
 
     @chart = @container.
       append("g")
-      .attr("transform", "translate(#{margin.left},#{margin.top})")
+      .attr("transform", "translate(#{@margin.left},#{@margin.top})")
 
-   getSize: () ->
-    [@domElement.offsetWidth, @domElement.offsetHeight]
-    
-   setSize: (width, height) ->
+   resize: () ->
+    [w, h] = [@domElement.offsetWidth, @domElement.offsetHeight]
+    newHeight = w / @aspectRatio[0] * @aspectRatio[1]
+    margin = @margin
+    @width = w - margin.left - margin.right
+    @height = newHeight - margin.bottom - margin.top
+
     @container
-      .attr("width", width)
-      .attr("height", height)
+      .attr("width", w)
+      .attr("height", newHeight)

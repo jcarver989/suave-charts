@@ -1,8 +1,8 @@
 # TODOS:
 # multi axis
 # Bar charts
-
 # transitions/animations
+
 class LineChart extends AbstractChart
   constructor: (selector, options = {}) ->
     super(selector, options)
@@ -38,12 +38,12 @@ class LineChart extends AbstractChart
 
   render: (isUpdate = true) =>
     @updateDimensions() if isUpdate
-    @axes.draw(@width, @height)
+    @axes.draw(@svg.width, @svg.height)
     @lines.attr("d", (line) =>
       @line.interpolate(@chooseInterpolation(line))
       @line(line.data)
     )
-    @area.y0(@height)
+    @area.y0(@svg.height)
     @areas.attr("d", (line) =>
       @area.interpolate(@chooseInterpolation(line))
       @area(line.data)
