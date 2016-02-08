@@ -24,7 +24,7 @@ class LineChart extends AbstractChart
       .x(@scaleX)
       .y(@scaleY)
 
-    d3.select(window).on('resize', @render)
+    window.addEventListener("resize", @render)
 
   enterLines: (enter) ->
     enter

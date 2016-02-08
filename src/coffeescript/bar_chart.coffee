@@ -13,7 +13,7 @@ class BarChart
       .scale(@y)
       .orient("left")
 
-    d3.select(window).on('resize', @render)
+    window.addEventListener("resize", @render)
 
   render: (isUpdate = true) =>
     @svg.resize()
