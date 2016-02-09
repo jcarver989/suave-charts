@@ -8,7 +8,7 @@ mergeOptions = (defaults, userSpecified) ->
 
   opts
 
-defaultOptions = {
+defaultLineOptions = {
   xScale: "linear" # linear, log, time
   yScale: "linear" # linear, log
   smoothLines: false # smooth chart lines 

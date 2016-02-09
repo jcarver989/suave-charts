@@ -1,7 +1,8 @@
-class BarChart
+class BarChart extends AbstractChart
   constructor: (selector, options = {}) ->
+    super(selector, defaultBarOptions, options)
     @options = defaultBarOptions
-    @svg = new Svg(selector, @options.aspectRatio, @options.margin)
+    @calc = new MarginCalculator(@svg)
     @x = d3.scale.ordinal()
     @y = d3.scale.linear()
 
@@ -15,7 +16,7 @@ class BarChart
 
     window.addEventListener("resize", @render)
 
-  render: (isUpdate = true) =>
+  render: () =>
     @svg.resize()
     @x.rangeRoundBands([0, @svg.width], .1)
     @y.range([@svg.height, 0])
@@ -35,6 +36,7 @@ class BarChart
   draw: (bars) ->
     @x.domain(bars.map((d) -> d[0]))
     @y.domain([0, d3.max(bars, (d) -> d[1])])
+    @options.margin.left = @calc.calcLeftMargin(@yAxis, @options.margin.left)
 
     @xAxisSelection = @svg.chart.append("g")
       .attr("class", "x axis")
@@ -55,5 +57,5 @@ class BarChart
       tip.show(this))
 
     @bars.on("mouseout", (d) -> tip.hide())
-    @render(false)
+    @render()
     

@@ -9,17 +9,16 @@ class Svg
       .append("svg")
       .attr('preserveAspectRatio','xMinYMin')
 
-    @chart = @container.
-      append("g")
-      .attr("transform", "translate(#{@margin.left},#{@margin.top})")
+    @chart = @container.append("g")
 
-   resize: () ->
+   resize: (margin = @margin) ->
     [w, h] = [@domElement.offsetWidth, @domElement.offsetHeight]
     newHeight = w / @aspectRatio[0] * @aspectRatio[1]
-    margin = @margin
     @width = w - margin.left - margin.right
     @height = newHeight - margin.bottom - margin.top
 
     @container
       .attr("width", w)
       .attr("height", newHeight)
+
+    @chart.attr("transform", "translate(#{@margin.left},#{@margin.top})")

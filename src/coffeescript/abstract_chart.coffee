@@ -1,4 +1,4 @@
 class AbstractChart
-  constructor: (selector, options = {}) ->
+  constructor: (selector, defaultOptions = {}, options = {}) ->
     @options = mergeOptions(defaultOptions, options)
     @svg = new Svg(selector, @options.aspectRatio, @options.margin)

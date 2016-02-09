@@ -6,11 +6,12 @@
 
 class LineChart extends AbstractChart
   constructor: (selector, options = {}) ->
-    super(selector, options)
+    super(selector, defaultLineOptions, options)
     
     @x = Scales.fromString(@options.xScale)
     @y = Scales.fromString(@options.yScale)
     @axes = new Axes(@svg.chart, @x, @y, @options)
+    @calc = new MarginCalculator(@svg)
     
     # @line and @area are simply functions that know how to 
     # draw the SVG path's 'd' attribute. ex @line([[x, y], [x, y]]) => path string
@@ -44,7 +45,7 @@ class LineChart extends AbstractChart
       tip.show(this))
     @dots.on("mouseout", (d) -> tip.hide())
 
-  render: (isUpdate = true) =>
+  render: () =>
     @svg.resize()
     @x.range([0, @svg.width])
     @y.range([@svg.height, 0])
@@ -69,6 +70,9 @@ class LineChart extends AbstractChart
     allPoints = d3.merge((line.data for line in lines))
     @x.domain(d3.extent(allPoints, (d) -> d[0])).nice()
     @y.domain([0, d3.max(allPoints, (d) -> d[1])]).nice()
+
+    # dynamically choose the left margin
+    @options.margin.left = @calc.calcLeftMargin(@axes.yAxis, @options.margin.left)
 
     # bind the line's data to the dom
     @lineGroups = @svg.chart
@@ -106,4 +110,4 @@ class LineChart extends AbstractChart
       .attr("r", @options.dotSize)
 
     @createTooltip() if @options.tooltips
-    @render(false)
+    @render()
