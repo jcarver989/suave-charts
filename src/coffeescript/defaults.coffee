@@ -17,6 +17,7 @@ defaultLineOptions = {
   tickPadding: 10
   dotSize: 6
   grid: true
+  autoMargins: true
   margin: {
     top: 50,
     bottom: 50,

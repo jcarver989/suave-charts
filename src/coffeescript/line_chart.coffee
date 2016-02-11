@@ -72,7 +72,8 @@ class LineChart extends AbstractChart
     @y.domain([0, d3.max(allPoints, (d) -> d[1])]).nice()
 
     # dynamically choose the left margin
-    @options.margin.left = @calc.calcLeftMargin(@axes.yAxis, @options.margin.left)
+    if @options.autoMargins
+      @options.margin.left = @calc.calcLeftMargin(@axes.yAxis, @options.margin.left)
 
     # bind the line's data to the dom
     @lineGroups = @svg.chart
