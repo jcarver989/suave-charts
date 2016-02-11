@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+  <head>
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,900,900italic,300,100' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="../dist/suave-charts.css">
+    <link rel="stylesheet" type="text/css" href="vendor/foundation.css">
+    <link rel="stylesheet" type="text/css" href="vendor/prism.css">
+    <style>
+      h1,h2,h3 {
+        font-family: 'Lato', sans-serif;
+        text-align: center;
+      }
+      h1 {
+        font-weight: 900;
+        margin-top: 5rem;
+      }
+
+      h3 { font-weight: 400; }
+
+      code, pre[class*="language"] {
+        border: none;
+        box-shadow: none;
+      }
+    </style>
+
+    <style id="css1">
+/* Each section gets a CSS class like: "arc arc-0 arc-Monday"
+You can style sections by index or by label */
+.arc.arc-0 { fill: #16a085; }
+.arc.arc-1 { fill: #27ae60; }
+.arc.arc-2 { fill: #2980b9; }
+.arc.arc-3 { fill: #8e44ad; }
+.arc.arc-4 { fill: #2c3e50; }
+.arc.arc-5 { fill: #f1c40f; }
+.arc.arc-6 { fill: #e67e22; }
+.arc.arc-7 { fill: #e74c3c; }
+</style>
+
+  </head>
+  <body>
+    <div class="row">
+      <h1>Basic Donut Chart</h1>
+      <div class="large-12 columns">
+        <div id="chart"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="large-6 columns">
+        <h3>Javascript</h3>
+        <div id="jsExample1"></div>
+      </div>
+
+      <div class="large-6 columns">
+        <h3>HTML</h3>
+        <pre><code class="language-html">
+&lt;link rel="stylesheet" type="text/css" href="../dist/suave-charts.css"&gt;
+&lt;script src="vendor/d3.min.js"&gt;&lt;/script&gt;
+&lt;script src="../dist/suave-charts.min.js"&gt;&lt;/script&gt;
+&lt;div id="chart"&gt;&lt;/div&gt;
+        </code></pre>
+        <h3>CSS</h3>
+        <div id="cssExample1"></div>
+      </div>
+    </div>
+    
+    <script src="vendor/d3.min.js"></script>
+    <script src="../dist/suave-charts.min.js"></script>
+    <script id="js1">
+// Create a donut chart
+var chart = new DonutChart("#chart", {
+  // Controls how much of a donut this is (0 to 100%)
+  // For a pie chart, set this to 0
+  holeSize: 0.5 
+})
+
+// Draw the chart
+chart.draw([ 
+  ["Monday", 10],
+  ["Tuesday", 9],
+  ["Wednesday", 5],
+  ["Thursday", 11],
+  ["Friday", 20],
+  ["Saturday", 13],
+  ["Sunday", 7]
+])
+</script>
+
+    <script src="vendor/code.js"></script>
+    <script>
+      codify("#css1", "#cssExample1", "language-css")
+      codify("#js1", "#jsExample1", "language-javascript")
+    </script>
+    <script src="vendor/prism.js"></script>
+  </body>
+</html>

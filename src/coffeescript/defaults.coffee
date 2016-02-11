@@ -41,3 +41,15 @@ defaultBarOptions = {
   }
 }
 
+defaultDonutOptions = {
+  aspectRatio: "16:9"
+  holeSize: 0.5
+  margin: {
+    top: 0,
+    bottom: 0,
+    right: 0,
+    left: 0
+  }
+}
+
+

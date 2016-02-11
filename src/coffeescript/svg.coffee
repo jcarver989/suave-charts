@@ -21,4 +21,4 @@ class Svg
       .attr("width", w)
       .attr("height", newHeight)
 
-    @chart.attr("transform", "translate(#{@margin.left},#{@margin.top})")
+    @chart.attr("transform", "translate(#{margin.left},#{margin.top})")

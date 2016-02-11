@@ -77,4 +77,26 @@ Tooltips
   text-align: center;
 }
 
+/* ==================
+Donut Charts
+===================== */
 
+.arc text {
+  text-anchor: middle;
+  fill: #fff;
+}
+
+.arc path {
+  stroke: #fff;
+  stroke-width: 1px;
+}
+
+/* Default colors */
+.arc.arc-0 { fill: #16a085; }
+.arc.arc-1 { fill: #27ae60; }
+.arc.arc-2 { fill: #2980b9; }
+.arc.arc-3 { fill: #8e44ad; }
+.arc.arc-4 { fill: #2c3e50; }
+.arc.arc-5 { fill: #f1c40f; }
+.arc.arc-6 { fill: #e67e22; }
+.arc.arc-7 { fill: #e74c3c; }

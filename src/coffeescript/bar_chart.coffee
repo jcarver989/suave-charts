@@ -1,7 +1,6 @@
 class BarChart extends AbstractChart
   constructor: (selector, options = {}) ->
     super(selector, defaultBarOptions, options)
-    @options = defaultBarOptions
     @calc = new MarginCalculator(@svg)
     @x = d3.scale.ordinal()
     @y = d3.scale.linear()
