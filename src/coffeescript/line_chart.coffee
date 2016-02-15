@@ -15,16 +15,9 @@ class LineChart extends AbstractChart
     
     # @line and @area are simply functions that know how to 
     # draw the SVG path's 'd' attribute. ex @line([[x, y], [x, y]]) => path string
-    @scaleX = (d) => @x(d[0])
-    @scaleY = (d) => @y(d[1])
     @line = d3.svg.line()
-      .x(@scaleX)
-      .y(@scaleY)
-
     @area = d3.svg.area()
-      .x(@scaleX)
-      .y(@scaleY)
-
+    
     window.addEventListener("resize", @render)
 
   enterLines: (enter) ->
@@ -40,8 +33,8 @@ class LineChart extends AbstractChart
 
   createTooltip: () ->
     tip = (@tip ||= new Tooltip(document))
-    @dots.on("mouseover", (d) ->
-      tip.html(d[1])
+    @dots.on("mouseover", (pair) ->
+      tip.html(pair.value)
       tip.show(this))
     @dots.on("mouseout", (d) -> tip.hide())
 
@@ -53,23 +46,39 @@ class LineChart extends AbstractChart
     @axes.draw(@svg.width, @svg.height)
     @lines.attr("d", (line) =>
       @line.interpolate(@chooseInterpolation(line))
-      @line(line.data)
+      @line(line.values)
     )
     @area.y0(@svg.height)
     @areas.attr("d", (line) =>
       @area.interpolate(@chooseInterpolation(line))
-      @area(line.data)
+      @area(line.values)
     )
     @dots
-      .attr("cx", @scaleX)
-      .attr("cy", @scaleY)
+      .attr("cx", (pair, i) => @x(@xLabels[i]))
+      .attr("cy", (pair, i) => @y(pair.value))
 
   chooseInterpolation: (line) -> if line.smooth then "monotone" else "linear"
 
-  draw: (lines) ->
-    allPoints = d3.merge((line.data for line in lines))
-    @x.domain(d3.extent(allPoints, (d) -> d[0])).nice()
-    @y.domain([0, d3.max(allPoints, (d) -> d[1])]).nice()
+  #  chart.draw({ 
+  #   labels: [...], // x-axis labels
+  #   lines: [{ label: "", values: []}, ],
+  # 
+  #   line1: { values: [1, 2, 3...], area: true }, // normal line
+  #   line2: { values: [null, 3, 4...], fillHoles: true  } // sparse line, ie missing values. The fillHoles option would interpolate between the missing points to draw a continuous line
+  # })
+  draw: (data) ->
+    @xLabels = data.labels
+    yValues = d3.merge((line.values for line in data.lines))
+    @x.domain(d3.extent(@xLabels, (x) -> x)).nice()
+    @y.domain([0, d3.max(yValues, (y) -> y)]).nice()
+
+    @line
+    .x((v, i) => @x(@xLabels[i]))
+    .y((v) => @y(v))
+
+    @area
+    .x((v, i) => @x(@xLabels[i]))
+    .y((v) => @y(v))
 
     # dynamically choose the left margin
     if @options.autoMargins
@@ -78,7 +87,7 @@ class LineChart extends AbstractChart
     # bind the line's data to the dom
     @lineGroups = @svg.chart
       .selectAll(".lineGroup")
-      .data(lines, (line) -> line.label)
+      .data(data.lines, (line) -> line.label)
 
     newGroups = @lineGroups.enter()
       .append("g")
@@ -95,19 +104,19 @@ class LineChart extends AbstractChart
     @dotGroups = @svg
       .chart
       .selectAll(".dotGroup")
-      .data(lines, (line) -> line.label)
+      .data(data.lines, (line) -> line.label)
 
     @dotGroups.enter().append("g").attr("class", "dotGroup")
     @dots = @dotGroups
       .selectAll(".dot")
       .data((line) ->
         return [] if line.dots == false
-        ([d[0], d[1], line.label] for d in line.data)
+        ({value: v, label: line.label} for v in line.values)
       )
 
     @dots.enter()
       .append("circle")
-      .attr("class", (d) -> "dot #{d[2]}")
+      .attr("class", (pair) -> "dot #{pair.label}")
       .attr("r", @options.dotSize)
 
     @createTooltip() if @options.tooltips

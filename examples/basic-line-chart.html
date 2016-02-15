@@ -32,7 +32,6 @@
 /* Make the grid lines light gray */
 .tick line { stroke: #eee; }
 .axis .domain { stroke: #eee; }
-
 </style>
 
   </head>
@@ -66,18 +65,22 @@
     <script src="../dist/suave-charts.min.js"></script>
     <script id="js1">
 // Makeup some data:
-var data = []
+var xS = []
+var yS = []
+
 for (i = 0; i < 21; i++) {
-  data.push([i, Math.round(Math.random(i) * i *100)])
+  xS.push(i)
+  yS.push(Math.round(Math.random(i) * i *100))
 }
 
 // Create a line chart
 chart = new LineChart("#chart")
 
 // Draw the chart
-chart.draw([ 
-  { label: "line1", data: data  }
-])
+chart.draw({ 
+  labels: xS,
+  lines: [{ label: "line1", values: yS }]
+})
     </script>
 
     <script src="vendor/code.js"></script>

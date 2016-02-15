@@ -76,21 +76,30 @@
     <script src="../dist/suave-charts.min.js"></script>
     <script id="js1">
 // Makeup some data:
+var xLabels = [
+  new Date("Jan 1, 2014"),
+  new Date("Jan 2, 2014"),
+  new Date("Jan 3, 2014"),
+  new Date("Jan 4, 2014"),
+  new Date("Jan 5, 2014"),
+  new Date("Jan 6, 2014"),
+  new Date("Jan 7, 2014"),
+  new Date("Jan 8, 2014")
+]
+
 var data = [
-  [new Date("Jan 1, 2014"), 10],
-  [new Date("Jan 2, 2014"), 200],
-  [new Date("Jan 3, 2014"), 3000],
-  [new Date("Jan 4, 2014"), 10],
-  [new Date("Jan 5, 2014"), 5000],
-  [new Date("Jan 6, 2014"), 400],
-  [new Date("Jan 7, 2014"), 2000],
-  [new Date("Jan 8, 2014"), 10000]
+  10,
+  200,
+  3000,
+  10,
+  5000,
+  400,
+  2000,
+  10000
 ]
 
 // And some more data
-var data2 = data.map(function(d) {
-  return [d[0], d[1] * 3]
-})
+var data2 = data.map(function(d) { return d * 3 })
 
 // Create a line chart
 chart = new LineChart("#chart", {
@@ -100,10 +109,13 @@ chart = new LineChart("#chart", {
 })
 
 // Draw the chart
-chart.draw([ 
-  { label: "line1", data: data, area: true, smooth: true  },
-  { label: "line2", data: data2, area: true, smooth: true  }
-])
+chart.draw({ 
+  labels: xLabels,
+  lines: [
+    { label: "line1", values: data, area: true, smooth: true  },
+    { label: "line2", values: data2, area: true, smooth: true  }
+  ]
+})
     </script>
 
     <script src="vendor/code.js"></script>
