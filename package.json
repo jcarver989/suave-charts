@@ -1,0 +1,27 @@
+{
+  "name": "suave-charts",
+  "version": "1.0.0",
+  "description": "Easy to use beautiful SVG charts for apps/websites",
+  "main": "dist/suave-charts.min.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jcarver989/suave-charts.git"
+  },
+  "keywords": [
+    "SVG",
+    "charts",
+    "graphs"
+  ],
+  "author": "Joshua Carver",
+  "license": "Custom",
+  "bugs": {
+    "url": "https://github.com/jcarver989/suave-charts/issues"
+  },
+  "homepage": "https://github.com/jcarver989/suave-charts"
+}
