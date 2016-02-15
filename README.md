@@ -15,6 +15,10 @@ you can easily do so via CSS rules on the chart container.
 1. Clone this repo
 2. Open some examples from the examples/ directory in your browser. They include both a working visual example + the code to create it.
 
+## Documentation
+
+See http://suavecharts.com
+
 ## Roadmap, What's Coming?
 
 1. Support for logarithmic scales in line/bar charts.
@@ -25,22 +29,4 @@ you can easily do so via CSS rules on the chart container.
 6. Pre-packaged CSS themes for charts to make it easy for non-designers to have great looking visualizations. 
 7. Optional animations & transitions for when data changes to help bring attention to what data has changed.
 
-##  Line Chart Options
-Available options to pass to `new LineChart(selector, options)`
 
-- xScale: String, the type of xScale to use. ["linear", "time"], default "linear"
-- yScale: String, the type of yScale to use. ["linear", "log"], default "linear"
-- tooltips: Boolean. Enable tooltips on hover over a dot
-- aspectRatio: String. The aspect ratio to preserve when the window is resized. Default: "16:9"
-- tickPadding: Int. The spacing in pixels between "ticks" on the xAxis. Default 10 
-- dotSize: Int. The radius of data points on the svg chart. Default 6
-- grid: Boolean. Enables/disables showing a grid behind the chart. Default true.
-- margin: Js Object with Int properties top, left, right, bottom. Controls how much room for labels the chart has. Default  { top: 50, bottom: 50, right: 80, left: 80 }
-- xTickInterval: String. If xScale is "time", this can be set to control the "step-size" ex: "seconds", "days", "minutes", "months", "years"
-- xTickFormat: String. If the xScale is "time" this controls the format of the date, ex: "%Y-%m-%d"
-
-Available options to pass to `LineChart.draw([{ }])` i.e. per-line options:
-
-- dots: Boolean. Toggles renering of data points on/off (required to be true for tooltips to work)
-- area: Boolean. Toggles drawing a shaded region below the line.
-- smooth: Boolean. Smooth chart lines via cubic interpolation that preserves monotonicity.
