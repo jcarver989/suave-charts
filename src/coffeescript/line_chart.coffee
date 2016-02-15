@@ -12,9 +12,10 @@ class LineChart extends AbstractChart
     @y = Scales.fromString(@options.yScale)
     @axes = new Axes(@svg.chart, @x, @y, @options)
 
+    @isTimeSeries = true if @options.xScale == "time"
 
     # check if user specified a label format like %y-%m-%d
-    if @options.xScale == "time" && typeof @options.xLabelFormat == "string"
+    if @isTimeSeries && typeof @options.xLabelFormat == "string"
       @axes.xAxis.tickFormat(d3.time.format(@options.xLabelFormat))
     else
       @axes.xAxis.tickFormat(@options.xLabelFormat)
@@ -77,7 +78,13 @@ class LineChart extends AbstractChart
   #   line2: { values: [null, 3, 4...], fillHoles: true  } // sparse line, ie missing values. The fillHoles option would interpolate between the missing points to draw a continuous line
   # })
   draw: (data) ->
-    @xLabels = data.labels
+    # if we have a time series and we get numbers for labels 
+    # assume they are epoch times
+    @xLabels = if @isTimeSeries && typeof data.labels[0] == "number"
+      data.labels.map((l) -> new Date(l))
+    else
+      data.labels
+
     yValues = d3.merge((line.values for line in data.lines))
     @x.domain(d3.extent(@xLabels, (x) -> x)).nice()
     @y.domain([0, d3.max(yValues, (y) -> y)]).nice()
