@@ -16,8 +16,8 @@ class Axes
       @xAxis.tickSize(-height)
       @yAxis.tickSize(-width)
 
-    if @options.xTickInterval
-      ticks = switch @options.xTickInterval
+    if @options.xLabelInterval
+      ticks = switch @options.xLabelInterval
         when "seconds" then d3.time.seconds
         when "minutes" then d3.time.minutes
         when "hours" then d3.time.hours
@@ -28,9 +28,6 @@ class Axes
 
     else if @options.ticks? && @options.ticks > 0
       @xAxis.ticks(@options.ticks)
-
-    if @options.xTickFormat
-      @xAxis.tickFormat(d3.time.format(@options.xTickFormat))
 
     @xAxisSelection.call @xAxis
     @yAxisSelection.call @yAxis

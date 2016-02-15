@@ -17,6 +17,9 @@ defaultLineOptions = {
   tickPadding: 10
   dotSize: 6
   grid: true
+  xLabelFormat: null # uses default
+  yLabelFormat: null # uses default
+  tooltipFormat: (y) -> d3.format(",.0f")(y)
   autoMargins: true
   margin: {
     top: 50,
@@ -26,8 +29,7 @@ defaultLineOptions = {
   }
 
   # Other arguments: 
-  #xTickInterval: "seconds", "days", "minutes", "months", "years"
-  #xTickFormat: "%Y-%m-%d"
+  #xLabelInterval: "seconds", "days", "minutes", "months", "years"
 }
 
 

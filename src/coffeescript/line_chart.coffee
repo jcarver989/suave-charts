@@ -11,6 +11,15 @@ class LineChart extends AbstractChart
     @x = Scales.fromString(@options.xScale)
     @y = Scales.fromString(@options.yScale)
     @axes = new Axes(@svg.chart, @x, @y, @options)
+
+
+    # check if user specified a label format like %y-%m-%d
+    if @options.xScale == "time" && typeof @options.xLabelFormat == "string"
+      @axes.xAxis.tickFormat(d3.time.format(@options.xLabelFormat))
+    else
+      @axes.xAxis.tickFormat(@options.xLabelFormat)
+
+    @axes.yAxis.tickFormat(@options.yLabelFormat)
     @calc = new MarginCalculator(@svg)
     
     # @line and @area are simply functions that know how to 
@@ -33,8 +42,9 @@ class LineChart extends AbstractChart
 
   createTooltip: () ->
     tip = (@tip ||= new Tooltip(document))
+    format = @options.tooltipFormat
     @dots.on("mouseover", (pair) ->
-      tip.html(pair.value)
+      tip.html(format(pair.value))
       tip.show(this))
     @dots.on("mouseout", (d) -> tip.hide())
 
