@@ -37,3 +37,5 @@ class Axes
       .scale(scale)
       .orient(orientation)
       .tickPadding(@options.tickPadding)
+
+module.exports = Axes

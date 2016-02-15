@@ -5,3 +5,5 @@ class Scales
       when "log" then d3.scale.log()
       when "time" then d3.time.scale()
       when "ordinal" then d3.scale.ordinal()
+
+module.exports = Scales

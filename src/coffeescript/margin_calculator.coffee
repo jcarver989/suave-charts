@@ -21,3 +21,5 @@ class MarginCalculator
 
     fauxSelection.remove()
     margin
+
+module.exports = MarginCalculator

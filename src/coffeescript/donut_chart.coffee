@@ -1,3 +1,6 @@
+AbstractChart = require('./abstract_chart')
+defaultDonutOptions = require('./defaults').donutOptions
+
 class DonutChart extends AbstractChart
   constructor: (selector, options = {}) ->
       super(selector, defaultDonutOptions, options)
@@ -37,7 +40,5 @@ class DonutChart extends AbstractChart
 
     @render()
 
-#g.append("text")
-#.attr("transform", (d) => "translate(#{arc.centroid(d)})")
-#.attr("dy", ".35em")
-#.text((d) -> d[1])
+
+module.exports = DonutChart

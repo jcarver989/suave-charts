@@ -55,4 +55,9 @@ defaultDonutOptions = {
   }
 }
 
-
+module.exports = {
+  mergeOptions: mergeOptions
+  lineOptions: defaultLineOptions
+  barOptions: defaultBarOptions
+  donutOptions: defaultDonutOptions
+}

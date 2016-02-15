@@ -1,3 +1,8 @@
+AbstractChart = require('./abstract_chart')
+MarginCalculator = require('./margin_calculator')
+Tooltip = require('./tooltip')
+defaultBarOptions = require('./defaults').barOptions
+
 class BarChart extends AbstractChart
   constructor: (selector, options = {}) ->
     super(selector, defaultBarOptions, options)
@@ -58,3 +63,4 @@ class BarChart extends AbstractChart
     @bars.on("mouseout", (d) -> tip.hide())
     @render()
     
+module.exports = BarChart

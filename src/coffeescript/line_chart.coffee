@@ -1,8 +1,9 @@
-# TODOS:
-# multi axis
-# Grouped bar charts
-# Column charts
-# transitions/animations
+AbstractChart = require('./abstract_chart')
+Axes = require('./axes')
+MarginCalculator = require('./margin_calculator')
+Scales = require('./scales')
+Tooltip = require('./tooltip')
+defaultLineOptions = require('./defaults').lineOptions
 
 class LineChart extends AbstractChart
   constructor: (selector, options = {}) ->
@@ -138,3 +139,5 @@ class LineChart extends AbstractChart
 
     @createTooltip() if @options.tooltips
     @render()
+
+module.exports = LineChart

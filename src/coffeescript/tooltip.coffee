@@ -34,4 +34,4 @@ class Tooltip
     { top: nodeCoords.top - (tipHeight + 10) + window.scrollY, left: nodeCenter - (tipWidth / 2) + window.scrollX }
     
 
-
+module.exports = Tooltip

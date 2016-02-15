@@ -22,3 +22,5 @@ class Svg
       .attr("height", newHeight)
 
     @chart.attr("transform", "translate(#{margin.left},#{margin.top})")
+
+module.exports = Svg
