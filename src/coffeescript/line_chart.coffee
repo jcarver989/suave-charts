@@ -131,9 +131,7 @@ class LineChart extends AbstractChart
       .selectAll(".dot")
       .data((line) =>
         return [] if line.dots == false
-        ds = ({ x: @xLabels[i], y: y, label: line.label} for y,i in line.values)
-        console.log(ds)
-        ds
+        ({ x: @xLabels[i], y: y, label: line.label} for y,i in line.values)
       )
 
     @dots

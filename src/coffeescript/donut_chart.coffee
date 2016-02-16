@@ -26,7 +26,6 @@ class DonutChart extends AbstractChart
     
   draw: (data) =>
     s = (sum, d) -> sum + d[1]
-    console.log(data.reduce(s, 0))
     arcSelection = @svg.chart.selectAll(".arc").data(@pie(data))
     @enter = arcSelection.enter()
       .append("g")
