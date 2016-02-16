@@ -27,7 +27,9 @@ class LineChart extends AbstractChart
     # @line and @area are simply functions that know how to 
     # draw the SVG path's 'd' attribute. ex @line([[x, y], [x, y]]) => path string
     @line = d3.svg.line()
+      .defined((d) -> d != null)
     @area = d3.svg.area()
+      .defined((d) -> d != null)
     
     window.addEventListener("resize", @render)
 
@@ -45,8 +47,8 @@ class LineChart extends AbstractChart
   createTooltip: () ->
     tip = (@tip ||= new Tooltip(document))
     format = @options.tooltipFormat
-    @dots.on("mouseover", (pair) ->
-      tip.html(format(pair.value))
+    @dots.on("mouseover", (point) ->
+      tip.html(format(point.y))
       tip.show(this))
     @dots.on("mouseout", (d) -> tip.hide())
 
@@ -66,8 +68,8 @@ class LineChart extends AbstractChart
       @area(line.values)
     )
     @dots
-      .attr("cx", (pair, i) => @x(@xLabels[i]))
-      .attr("cy", (pair, i) => @y(pair.value))
+      .attr("cx", (point) => @x(point.x))
+      .attr("cy", (point) => @y(point.y))
 
   chooseInterpolation: (line) -> if line.smooth then "monotone" else "linear"
 
@@ -127,14 +129,18 @@ class LineChart extends AbstractChart
     @dotGroups.enter().append("g").attr("class", "dotGroup")
     @dots = @dotGroups
       .selectAll(".dot")
-      .data((line) ->
+      .data((line) =>
         return [] if line.dots == false
-        ({value: v, label: line.label} for v in line.values)
+        ds = ({ x: @xLabels[i], y: y, label: line.label} for y,i in line.values)
+        console.log(ds)
+        ds
       )
 
-    @dots.enter()
+    @dots
+      .enter()
       .append("circle")
-      .attr("class", (pair) -> "dot #{pair.label}")
+      .filter((d) -> d.y != null)
+      .attr("class", (point) -> "dot #{point.label}")
       .attr("r", @options.dotSize)
 
     @createTooltip() if @options.tooltips
