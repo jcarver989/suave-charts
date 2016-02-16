@@ -5,7 +5,7 @@
 class MarginCalculator
   constructor: (@svg) ->
 
-  calcLeftMargin: (yAxis, defaultMargin, minimumMargin = 10) ->
+  calcLeftMargin: (yAxis, defaultMargin, minimumMargin = 20) ->
     fauxSelection = @svg.chart
       .append("g")
       .attr("class", "y axis")
