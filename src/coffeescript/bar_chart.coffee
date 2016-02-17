@@ -65,7 +65,7 @@ class BarChart extends AbstractChart
       .data((label, i) -> normalizedBars[i])
       .enter()
       .append("rect")
-      .attr("class", (barValue, i) -> "bar #{i}")
+      .attr("class", (barValue, i) -> "bar bar-#{i}")
       
     tooltipFormat = @options.tooltipFormat
     tip = (@tip ||= new Tooltip(document))
