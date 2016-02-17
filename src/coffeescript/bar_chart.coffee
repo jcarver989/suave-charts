@@ -26,7 +26,7 @@ class BarChart extends AbstractChart
   render: () =>
     @svg.resize()
     @x.rangeRoundBands([0, @svg.width], .1)
-    @groupedX.rangeRoundBands([0, @x.rangeBand()], .1)
+    @groupedX.rangeRoundBands([0, @x.rangeBand()], @options.barSpacing)
     @y.range([@svg.height, 0])
     @xAxisSelection
       .attr("transform", "translate(0, #{@svg.height})")
