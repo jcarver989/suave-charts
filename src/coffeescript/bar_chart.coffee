@@ -23,6 +23,12 @@ class BarChart extends AbstractChart
 
     window.addEventListener("resize", @render)
 
+  remove: () =>
+    window.removeEventListener("resize", @render)
+    element = @svg.domElement
+    while element.firstChild
+      element.removeChild(element.firstChild)
+
   render: () =>
     @svg.resize()
 

@@ -12,6 +12,12 @@ class DonutChart extends AbstractChart
 
       window.addEventListener("resize", @render)
 
+  remove: () =>
+    window.removeEventListener("resize", @render)
+    element = @svg.domElement
+    while element.firstChild
+      element.removeChild(element.firstChild)
+
   render: () =>
     @svg.resize()
     radius = Math.min(@svg.width, @svg.height) / 2

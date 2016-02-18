@@ -52,6 +52,12 @@ class LineChart extends AbstractChart
       tip.show(this))
     @dots.on("mouseout", (d) -> tip.hide())
 
+  remove: () =>
+    window.removeEventListener("resize", @render)
+    element = @svg.domElement
+    while element.firstChild
+      element.removeChild(element.firstChild)
+
   render: () =>
     @svg.resize()
     @x.range([0, @svg.width])
