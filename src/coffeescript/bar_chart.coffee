@@ -27,7 +27,6 @@ class BarChart extends AbstractChart
     @svg.resize()
 
     if @options.grid
-      @xAxis.tickSize(-@svg.height)
       @yAxis.tickSize(-@svg.width)
 
     @x.rangeRoundBands([0, @svg.width], .1)
