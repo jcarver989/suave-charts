@@ -21,12 +21,6 @@ class BarChart extends AbstractChart
       .orient("left")
       .tickFormat(@options.yLabelFormat)
 
-  remove: () =>
-    window.removeEventListener("resize", @render)
-    element = @svg.domElement
-    while element.firstChild
-      element.removeChild(element.firstChild)
-
   render: () =>
     @svg.resize()
 
@@ -50,10 +44,7 @@ class BarChart extends AbstractChart
       .attr("height", (barValue) => @svg.height - @y(barValue))
 
   draw: (data) ->
-    unless @drawCalled
-      window.addEventListener("resize", @render)
-      @drawCalled = true
-
+    super()
     normalizedBars = ((if Object.prototype.toString.call(d) == "[object Array]" then d else [d]) for d in data.bars)
 
     @y.domain([0, d3.max(d3.merge(normalizedBars, (bars) -> d3.max(bars)))])

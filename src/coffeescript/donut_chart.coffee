@@ -10,12 +10,6 @@ class DonutChart extends AbstractChart
       .sort(null)
       .value((d) -> d[1])
 
-  remove: () =>
-    window.removeEventListener("resize", @render)
-    element = @svg.domElement
-    while element.firstChild
-      element.removeChild(element.firstChild)
-
   render: () =>
     @svg.resize()
     radius = Math.min(@svg.width, @svg.height) / 2
@@ -29,9 +23,7 @@ class DonutChart extends AbstractChart
     @labels.attr("transform", (d) => "translate(#{@arc.centroid(d)})")
     
   draw: (data) =>
-    unless @drawCalled
-      window.addEventListener("resize", @render)
-      @drawCalled = true
+    super()
     s = (sum, d) -> sum + d[1]
     arcSelection = @svg.chart.selectAll(".arc").data(@pie(data))
     @enter = arcSelection.enter()

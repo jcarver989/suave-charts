@@ -50,12 +50,6 @@ class LineChart extends AbstractChart
       tip.show(this))
     @dots.on("mouseout", (d) -> tip.hide())
 
-  remove: () =>
-    window.removeEventListener("resize", @render)
-    element = @svg.domElement
-    while element.firstChild
-      element.removeChild(element.firstChild)
-
   render: () =>
     @svg.resize()
     @x.range([0, @svg.width])
@@ -77,17 +71,8 @@ class LineChart extends AbstractChart
 
   chooseInterpolation: (line) -> if line.smooth then "monotone" else "linear"
 
-  #  chart.draw({ 
-  #   labels: [...], // x-axis labels
-  #   lines: [{ label: "", values: []}, ],
-  # 
-  #   line1: { values: [1, 2, 3...], area: true }, // normal line
-  #   line2: { values: [null, 3, 4...], fillHoles: true  } // sparse line, ie missing values. The fillHoles option would interpolate between the missing points to draw a continuous line
-  # })
   draw: (data) ->
-    unless @drawCalled
-      window.addEventListener("resize", @render)
-      @drawCalled = true
+    super()
     # if we have a time series and we get numbers for labels 
     # assume they are epoch times
     @xLabels = if @isTimeSeries && typeof data.labels[0] == "number"
