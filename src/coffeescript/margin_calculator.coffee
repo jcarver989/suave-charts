@@ -5,14 +5,14 @@
 class MarginCalculator
   constructor: (@svg) ->
 
-  calcLeftMargin: (yAxis, defaultMargin, minimumMargin = 20) ->
+  calcLeftMargin: (axis, defaultMargin, axisType = "y", minimumMargin = 20) ->
     fauxSelection = @svg.chart
       .append("g")
-      .attr("class", "y axis")
+      .attr("class", "#{axisType} axis")
       .attr("opacity", 0)
 
-    fauxSelection.call(yAxis)
-    texts = fauxSelection.selectAll("text").sort((a,b) -> b - a)
+    fauxSelection.call(axis)
+    texts = fauxSelection.selectAll("text").sort((a,b) -> b.length - a.length)
     margin = if (texts.length >= 1 && texts[0].length >= 1)
       bbox = texts[0][0].getBBox()
       Math.round(bbox.width) + minimumMargin
