@@ -1,32 +1,15 @@
 # Suave Charts
-Easy, reusable charts built on d3.js. All of the power, none of the complexity.
+Suave charts aims to be the easiest to use, best looking charting library for your app or website. It's built on d3.js and is free for personal use (see license.txt for more info). 
 
-## What's Available?
-
-1. Mulit-series Line Charts (time series or linear x-lables)
-2. Bar Charts
-
-Suave Charts are responsive by default. As a result you don't specify chart sizes in pixels, rather you supply an aspectRatio (default of 16:9)
-Then when your viewport changes Suave Charts will automatically resize your charts using the aspectRatio specified. If you want to fix a chart's size
-you can easily do so via CSS rules on the chart container. 
+## Reasons To Use Suave Charts
+- Get nice looking charts in just a few minutes
+- All charts are 100% SVG/HTML5. Flash and VML are for dinosaurs
+- All charts are responsive & work across multiple devices
+- Super easy for developers or designers to customize with only a few lines of CSS
 
 ## Getting Started
-
-1. Clone this repo
-2. Open some examples from the examples/ directory in your browser. They include both a working visual example + the code to create it.
-
-## Documentation
-
-See http://suavecharts.com
+Grab the latest release of Suave Charts from [the website](http://suavecharts.com). There you'll also find docs, visual examples and more.
 
 ## Roadmap, What's Coming?
 
-1. Support for logarithmic scales in line/bar charts.
-2. Multi-axis line charts
-3. Grouped bar charts
-4. Histograms
-5. Smart redrawing for Ajax applications that need to add/remove data as a user selects it.
-6. Pre-packaged CSS themes for charts to make it easy for non-designers to have great looking visualizations. 
-7. Optional animations & transitions for when data changes to help bring attention to what data has changed.
-
-
+See the milestones and current work-items [here](https://github.com/jcarver989/suave-charts/milestones)
