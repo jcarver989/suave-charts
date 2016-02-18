@@ -27,6 +27,7 @@
 /* Color line1 blue */
 .bar { fill: #00aadd; transition: fill 0.5s; }
 .bar:hover { fill: #000; }
+.y.axis path, .y.axis line  { stroke: #eee; }
 
 /* Make the grid lines light gray */
 
@@ -62,14 +63,14 @@
     <script src="../dist/suave-charts.min.js"></script>
     <script id="js1">
 // Create a bar chart
-var chart = new Suave.BarChart("#chart")
+var chart = new Suave.BarChart("#chart", { layout: "horizontal" })
 
 // Draw the chart
 chart.draw({
   labels: [
     "Monday",
     "Tuesday",
-    "Wednesday",
+    "Wednesdayakdljfalk",
     "Thursday",
     "Friday",
     "Saturday",
