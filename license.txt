@@ -1,0 +1,5 @@
+ Suave Charts is available under two licenses depending on the use case:
+
+For non-commerical purposes Suave Charts is available under the Creative Commons Attribution-NonCommercial 4.0 license. See http://creativecommons.org/licenses/by-nc/4.0/
+For commercial use cases send us an email with your use case to suavecharts@gmail.com to get more information.  
+
