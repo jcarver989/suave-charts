@@ -13,6 +13,7 @@ class BarChart extends AbstractChart
 
     @xAxis = d3.svg.axis()
       .scale(@x)
+      .outerTickSize(0)
       .tickFormat(@options.xLabelFormat)
 
     @yAxis = d3.svg.axis()
@@ -23,7 +24,7 @@ class BarChart extends AbstractChart
       @xAxis.orient("bottom")
       @yAxis.orient("left")
     else
-      @xAxis.orient("left").outerTickSize(0)
+      @xAxis.orient("left")
       @yAxis.orient("bottom")
 
   render: () =>
@@ -31,6 +32,7 @@ class BarChart extends AbstractChart
 
     layout = if @options.layout == "vertical"
       @yAxis.tickSize(-@svg.width) if @options.grid
+
       {
        xTransform: "translate(0, #{@svg.height})",
        yTransform: "",
@@ -87,7 +89,10 @@ class BarChart extends AbstractChart
     if @options.layout == "vertical"
       @options.margin.left = @calc.calcLeftMargin(@yAxis, @options.margin.left)
     else
-      #@options.margin.left = @calc.calcLeftMargin(@xAxis, @options.margin.left)
+      # in order to calc the margin on the oridinal scale we need to set range round bands 
+      # on the scale as a hack
+      @x.rangeRoundBands([0, 10], .1)
+      @options.margin.left = @calc.calcLeftMargin(@xAxis, @options.margin.left, "x")
 
     @xAxisSelection = @svg.chart.append("g")
       .attr("class", "x axis")
