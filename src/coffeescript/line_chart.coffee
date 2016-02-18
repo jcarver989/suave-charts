@@ -8,7 +8,6 @@ defaultLineOptions = require('./defaults').lineOptions
 class LineChart extends AbstractChart
   constructor: (selector, options = {}) ->
     super(selector, defaultLineOptions, options)
-    
     @x = Scales.fromString(@options.xScale)
     @y = Scales.fromString(@options.yScale)
     @axes = new Axes(@svg.chart, @x, @y, @options)
@@ -31,7 +30,6 @@ class LineChart extends AbstractChart
     @area = d3.svg.area()
       .defined((d) -> d != null)
     
-    window.addEventListener("resize", @render)
 
   enterLines: (enter) ->
     enter
@@ -87,6 +85,9 @@ class LineChart extends AbstractChart
   #   line2: { values: [null, 3, 4...], fillHoles: true  } // sparse line, ie missing values. The fillHoles option would interpolate between the missing points to draw a continuous line
   # })
   draw: (data) ->
+    unless @drawCalled
+      window.addEventListener("resize", @render)
+      @drawCalled = true
     # if we have a time series and we get numbers for labels 
     # assume they are epoch times
     @xLabels = if @isTimeSeries && typeof data.labels[0] == "number"
