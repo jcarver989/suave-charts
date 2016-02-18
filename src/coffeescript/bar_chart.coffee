@@ -13,35 +13,68 @@ class BarChart extends AbstractChart
 
     @xAxis = d3.svg.axis()
       .scale(@x)
-      .orient("bottom")
       .tickFormat(@options.xLabelFormat)
 
     @yAxis = d3.svg.axis()
       .scale(@y)
-      .orient("left")
       .tickFormat(@options.yLabelFormat)
+
+    if @options.layout == "vertical"
+      @xAxis.orient("bottom")
+      @yAxis.orient("left")
+    else
+      @xAxis.orient("left").outerTickSize(0)
+      @yAxis.orient("bottom")
 
   render: () =>
     @svg.resize()
 
-    if @options.grid
-      @yAxis.tickSize(-@svg.width)
+    layout = if @options.layout == "vertical"
+      @yAxis.tickSize(-@svg.width) if @options.grid
+      {
+       xTransform: "translate(0, #{@svg.height})",
+       yTransform: "",
+       groupsTransform: (label) => "translate(#{@x(label)}, 0)",
+       xRange: [0, @svg.width],
+       yRange: [@svg.height, 0],
+       barX: (barValue, i) => @groupedX(i),
+       barY: (barValue) => @y(barValue),
+       barWidth: () => @groupedX.rangeBand(),
+       barHeight: (barValue) => @svg.height - @y(barValue)
+      }
+    else
+      @yAxis.tickSize(-@svg.height) if @options.grid
+      {
+       xTransform: "",
+       yTransform: "translate(0, #{@svg.height})",
+       groupsTransform: (label) => "translate(0, #{@x(label)})",
+       xRange: [0, @svg.height],
+       yRange: [0, @svg.width],
+       barX: (barValue) => 0,
+       barY: (barValue, i) => @groupedX(i),
+       barHeight: () => @groupedX.rangeBand(),
+       barWidth: (barValue) => @y(barValue)
+      }
 
-    @x.rangeRoundBands([0, @svg.width], .1)
+    @x.rangeRoundBands(layout.xRange, .1)
     @groupedX.rangeRoundBands([0, @x.rangeBand()], @options.barSpacing)
-    @y.range([@svg.height, 0])
+    @y.range(layout.yRange)
+
     @xAxisSelection
-      .attr("transform", "translate(0, #{@svg.height})")
+      .attr("transform", layout.xTransform)
       .call(@xAxis)
 
-    @yAxisSelection.call(@yAxis)
-    @groups.attr("transform", (label) => "translate(#{@x(label)}, 0)")
+    @yAxisSelection
+      .attr("transform", layout.yTransform)
+      .call(@yAxis)
+
+    @groups.attr("transform", layout.groupsTransform)
 
     @bars
-      .attr("x", (barValue, i) => @groupedX(i))
-      .attr("y", (barValue) => @y(barValue))
-      .attr("width", @groupedX.rangeBand())
-      .attr("height", (barValue) => @svg.height - @y(barValue))
+      .attr("x", layout.barX)
+      .attr("y", layout.barY)
+      .attr("width", layout.barWidth)
+      .attr("height", layout.barHeight)
 
   draw: (data) ->
     super()
@@ -50,7 +83,11 @@ class BarChart extends AbstractChart
     @y.domain([0, d3.max(d3.merge(normalizedBars, (bars) -> d3.max(bars)))])
     @x.domain(data.labels)
     @groupedX.domain(normalizedBars[0].map((a, i) -> i))
-    @options.margin.left = @calc.calcLeftMargin(@yAxis, @options.margin.left)
+
+    if @options.layout == "vertical"
+      @options.margin.left = @calc.calcLeftMargin(@yAxis, @options.margin.left)
+    else
+      #@options.margin.left = @calc.calcLeftMargin(@xAxis, @options.margin.left)
 
     @xAxisSelection = @svg.chart.append("g")
       .attr("class", "x axis")

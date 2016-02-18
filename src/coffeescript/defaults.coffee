@@ -37,10 +37,11 @@ defaultBarOptions = {
   aspectRatio: "16:9"
   grid: true
   tooltips: true
-  xLabelFormat: null,
-  yLabelFormat: null,
+  layout: "vertical"
+  xLabelFormat: null
+  yLabelFormat: null
   tooltipFormat: (y) -> d3.format(",.0f")(y)
-  barSpacing: 0
+  barSpacing: 0.1 
   margin: {
     top: 50,
     bottom: 50,
