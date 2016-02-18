@@ -35,10 +35,12 @@ defaultLineOptions = {
 
 defaultBarOptions = {
   aspectRatio: "16:9"
+  grid: true
+  tooltips: true
   xLabelFormat: null,
   yLabelFormat: null,
-  barSpacing: 0
   tooltipFormat: (y) -> d3.format(",.0f")(y)
+  barSpacing: 0
   margin: {
     top: 50,
     bottom: 50,

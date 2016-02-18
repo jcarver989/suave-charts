@@ -25,6 +25,11 @@ class BarChart extends AbstractChart
 
   render: () =>
     @svg.resize()
+
+    if @options.grid
+      @xAxis.tickSize(-@svg.height)
+      @yAxis.tickSize(-@svg.width)
+
     @x.rangeRoundBands([0, @svg.width], .1)
     @groupedX.rangeRoundBands([0, @x.rangeBand()], @options.barSpacing)
     @y.range([@svg.height, 0])
@@ -66,14 +71,15 @@ class BarChart extends AbstractChart
       .enter()
       .append("rect")
       .attr("class", (barValue, i) -> "bar bar-#{i}")
-      
-    tooltipFormat = @options.tooltipFormat
-    tip = (@tip ||= new Tooltip(document))
-    @bars.on("mouseover", (d) ->
-      tip.html(tooltipFormat(d))
-      tip.show(this))
+    
+    if @options.tooltips
+      tooltipFormat = @options.tooltipFormat
+      tip = (@tip ||= new Tooltip(document))
+      @bars.on("mouseover", (d) ->
+        tip.html(tooltipFormat(d))
+        tip.show(this))
 
-    @bars.on("mouseout", (d) -> tip.hide())
+      @bars.on("mouseout", (d) -> tip.hide())
     @render()
     
 module.exports = BarChart
