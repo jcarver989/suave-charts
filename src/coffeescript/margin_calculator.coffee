@@ -12,7 +12,7 @@ class MarginCalculator
       .attr("opacity", 0)
 
     fauxSelection.call(axis)
-    texts = fauxSelection.selectAll("text").sort((a,b) -> b.length - a.length)
+    texts = fauxSelection.selectAll("text").sort((a,b) -> b.toString().length - a.toString().length)
     margin = if (texts.length >= 1 && texts[0].length >= 1)
       bbox = texts[0][0].getBBox()
       Math.round(bbox.width) + minimumMargin
