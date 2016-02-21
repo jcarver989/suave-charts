@@ -41,7 +41,26 @@ defaultBarOptions = {
   xLabelFormat: null
   yLabelFormat: null
   tooltipFormat: (y) -> d3.format(",.0f")(y)
-  barSpacing: 0.1 
+  barSpacing: 0.1
+  margin: {
+    top: 50,
+    bottom: 50,
+    right: 80,
+    left: 80
+  }
+}
+
+defaultHistogramOptions = {
+  aspectRatio: "16:9"
+  grid: true
+  tooltips: true
+  layout: "vertical"
+  xLabelFormat: null
+  yLabelFormat: null
+  tooltipFormat: (y) -> d3.format(",.0f")(y)
+  bins: 20
+  ticks: 20
+  domain: null
   margin: {
     top: 50,
     bottom: 50,
@@ -65,5 +84,6 @@ module.exports = {
   mergeOptions: mergeOptions
   lineOptions: defaultLineOptions
   barOptions: defaultBarOptions
+  histogramOptions: defaultHistogramOptions
   donutOptions: defaultDonutOptions
 }
