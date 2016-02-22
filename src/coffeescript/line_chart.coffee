@@ -78,19 +78,26 @@ class LineChart extends AbstractChart
     xMin = null
     xMax = null
     yMax = null
+    
+    lineCopies = []
+    for line, i in data.lines
+      lineCopies.push({ values: new Array(line.values.length) })
+      for key, val of line when key != "values"
+        lineCopies[i][key] = val
 
     for label, i in labels
       baseline = 0
-      for line in data.lines
+      for line, j in data.lines
         y = line.values[i]
         yb = y + baseline
         xMin = label if !xMin? || xMin > label
         xMax = label if !xMax? || xMax < label
         yMax = yb if !yMax? || yMax < yb
-        line.values[i] = { x: label, y: y, baseline: baseline, lineKey: line.label  }
+        copy = lineCopies[j]
+        copy.values[i] = { x: label, y: y, baseline: baseline, lineKey: line.label }
         baseline += y if stack
     {
-      lines: data.lines
+      lines: lineCopies
       xDomain: [xMin, xMax]
       yDomain: [0, yMax]
     }
