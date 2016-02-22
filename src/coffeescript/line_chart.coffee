@@ -25,11 +25,8 @@ class LineChart extends AbstractChart
     
     # @line and @area are simply functions that know how to 
     # draw the SVG path's 'd' attribute. ex @line([[x, y], [x, y]]) => path string
-    @line = d3.svg.line()
-      .defined((d) -> d != null)
-    @area = d3.svg.area()
-      .defined((d) -> d != null)
-    
+    @line = d3.svg.line().defined((d) -> d.y != null)
+    @area = d3.svg.area().defined((d) -> d.y != null)
 
   enterLines: (enter) ->
     enter
@@ -60,37 +57,59 @@ class LineChart extends AbstractChart
       @line.interpolate(@chooseInterpolation(line))
       @line(line.values)
     )
-    @area.y0(@svg.height)
+
     @areas.attr("d", (line) =>
       @area.interpolate(@chooseInterpolation(line))
       @area(line.values)
     )
+    
     @dots
       .attr("cx", (point) => @x(point.x))
-      .attr("cy", (point) => @y(point.y))
+      .attr("cy", (point) => @y(point.y + point.baseline))
 
   chooseInterpolation: (line) -> if line.smooth then "monotone" else "linear"
 
-  draw: (data) ->
-    super()
-    # if we have a time series and we get numbers for labels 
-    # assume they are epoch times
-    @xLabels = if @isTimeSeries && typeof data.labels[0] == "number"
+  formatData: (data, stack = false) ->
+    labels = if @isTimeSeries && typeof data.labels[0] == "number"
       data.labels.map((l) -> new Date(l))
     else
       data.labels
 
-    yValues = d3.merge((line.values for line in data.lines))
-    @x.domain(d3.extent(@xLabels, (x) -> x)).nice()
-    @y.domain([0, d3.max(yValues, (y) -> y)]).nice()
+    xMin = null
+    xMax = null
+    yMax = null
+
+    for label, i in labels
+      baseline = 0
+      for line in data.lines
+        y = line.values[i]
+        yb = y + baseline
+        xMin = label if !xMin? || xMin > label
+        xMax = label if !xMax? || xMax < label
+        yMax = yb if !yMax? || yMax < yb
+        line.values[i] = { x: label, y: y, baseline: baseline, lineKey: line.label  }
+        baseline += y if stack
+    {
+      lines: data.lines
+      xDomain: [xMin, xMax]
+      yDomain: [0, yMax]
+    }
+
+  draw: (data) ->
+    super()
+    { lines, xDomain, yDomain } = @formatData(data, @options.stack)
+
+    @x.domain(xDomain).nice()
+    @y.domain(yDomain).nice()
 
     @line
-    .x((v, i) => @x(@xLabels[i]))
-    .y((v) => @y(v))
+    .x((d) => @x(d.x))
+    .y((d) => @y(d.y + d.baseline))
 
     @area
-    .x((v, i) => @x(@xLabels[i]))
-    .y((v) => @y(v))
+    .x((d) => @x(d.x))
+    .y0((d) => @y(d.baseline))
+    .y1((d) => @y(d.y + d.baseline))
 
     # dynamically choose the left margin
     if @options.autoMargins
@@ -99,7 +118,7 @@ class LineChart extends AbstractChart
     # bind the line's data to the dom
     @lineGroups = @svg.chart
       .selectAll(".lineGroup")
-      .data(data.lines, (line) -> line.label)
+      .data(lines, (line) -> line.label)
 
     newGroups = @lineGroups.enter()
       .append("g")
@@ -116,21 +135,21 @@ class LineChart extends AbstractChart
     @dotGroups = @svg
       .chart
       .selectAll(".dotGroup")
-      .data(data.lines, (line) -> line.label)
+      .data(lines, (line) -> line.label)
 
     @dotGroups.enter().append("g").attr("class", "dotGroup")
     @dots = @dotGroups
       .selectAll(".dot")
       .data((line) =>
         return [] if line.dots == false
-        ({ x: @xLabels[i], y: y, label: line.label} for y,i in line.values)
+        line.values
       )
 
     @dots
       .enter()
       .append("circle")
       .filter((d) -> d.y != null)
-      .attr("class", (point) -> "dot #{point.label}")
+      .attr("class", (point) -> "dot #{point.lineKey}")
       .attr("r", @options.dotSize)
 
     @createTooltip() if @options.tooltips

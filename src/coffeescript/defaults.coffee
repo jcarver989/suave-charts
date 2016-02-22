@@ -9,18 +9,19 @@ mergeOptions = (defaults, userSpecified) ->
   opts
 
 defaultLineOptions = {
+  autoMargins: true
+  aspectRatio: "16:9"
+  dotSize: 6
+  grid: true
   xScale: "linear" # linear, log, time
   yScale: "linear" # linear, log
   smoothLines: false # smooth chart lines 
+  stack: false
   tooltips: true
-  aspectRatio: "16:9"
   tickPadding: 10
-  dotSize: 6
-  grid: true
   xLabelFormat: null # uses default
   yLabelFormat: null # uses default
   tooltipFormat: (y) -> d3.format(",.0f")(y)
-  autoMargins: true
   margin: {
     top: 50,
     bottom: 50,
