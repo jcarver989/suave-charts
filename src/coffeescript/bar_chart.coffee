@@ -2,6 +2,7 @@ AbstractChart = require('./abstract_chart')
 MarginCalculator = require('./margin_calculator')
 Tooltip = require('./tooltip')
 defaultBarOptions = require('./defaults').barOptions
+filterTicks = require('./filter_ticks')
 
 class BarChart extends AbstractChart
   constructor: (selector, options = {}) ->
@@ -85,6 +86,9 @@ class BarChart extends AbstractChart
     @y.domain([0, d3.max(d3.merge(normalizedBars, (bars) -> d3.max(bars)))])
     @x.domain(data.labels)
     @groupedX.domain(normalizedBars[0].map((a, i) -> i))
+
+    if @options.ticks? && @options.ticks > 0
+      @xAxis.tickValues(filterTicks(@options.ticks, @x))
 
     if @options.layout == "vertical"
       @options.margin.left = @calc.calcLeftMargin(@yAxis, @options.margin.left)

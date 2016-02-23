@@ -1,3 +1,5 @@
+filterTicks = require('./filter_ticks')
+
 class Axes
   constructor: (svg, @xScale, @yScale, @options) ->
     @xAxisSelection = svg.append("g")
@@ -9,17 +11,6 @@ class Axes
     @xAxis = @newAxis(@xScale, "bottom")
     @yAxis = @newAxis(@yScale, "left")
   
-  filterTicks: () ->
-    num = @options.ticks
-    domain = @xScale.domain()
-    step = Math.round(domain.length / (num - 2))
-    domain.filter((label, i) ->
-      if (i == 0 || label == domain[domain.length-1])
-        true
-      else
-        i % step == 0
-    )
-
   draw: (width, height) ->
     @xAxisSelection.attr("transform", "translate(0,#{height})")
 
@@ -38,7 +29,8 @@ class Axes
       @xAxis.ticks(ticks)
 
     else if @options.ticks? && @options.ticks > 0
-      @xAxis.tickValues(@filterTicks())
+      ticks = filterTicks(@options.ticks, @xScale)
+      @xAxis.tickValues(ticks)
 
     @xAxisSelection.call @xAxis
     @yAxisSelection.call @yAxis
