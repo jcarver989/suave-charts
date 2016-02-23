@@ -100,11 +100,11 @@ class BarChart extends AbstractChart
     @yAxisSelection = @svg.chart.append("g")
       .attr("class", "y axis")
     
-    @groups = @svg.chart.selectAll(".bar-group")
+    @groups = @svg.chart.selectAll(".barGroup")
       .data(data.labels)
       .enter()
       .append("g")
-      .attr("class", (label) -> "bar-group #{label}")
+      .attr("class", (label, i) -> "barGroup barGroup-#{i} #{label}")
 
     @bars = @groups.selectAll(".bar")
       .data((label, i) -> normalizedBars[i])

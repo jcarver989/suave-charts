@@ -13,7 +13,7 @@ defaultLineOptions = {
   aspectRatio: "16:9"
   dotSize: 6
   grid: true
-  xScale: "linear" # linear, log, time
+  xScale: "ordinal" # linear, log, time
   yScale: "linear" # linear, log
   smoothLines: false # smooth chart lines 
   stack: false

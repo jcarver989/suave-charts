@@ -15,14 +15,59 @@ Axes
 /* ==================
 Dots 
 ===================== */
-.dot { fill: #00aadd; stroke-width: 3px; stroke: #fff; transition: fill 0.5s ease-in-out; }
+.dot { fill: #00aadd; stroke-width: 2px; stroke: #fff; transition: fill 0.5s ease-in-out; }
 .dot:hover { fill: #000; stroke: #000; }
+
+.dotGroup.line-0 .dot { fill: #3498db; }
+.dotGroup.line-1 .dot { fill: #2ecc71; }
+.dotGroup.line-2 .dot { fill: #e67e22; }
+.dotGroup.line-3 .dot { fill: #8e44ad; }
+.dotGroup.line-4 .dot { fill: #2c3e50; }
+.dotGroup.line-5 .dot { fill: #f1c40f; }
+.dotGroup.line-6 .dot { fill: #e67e22; }
+.dotGroup.line-7 .dot { fill: #e74c3c; }
+
 
 /* ==================
 Line Charts
 ===================== */
-.line { fill: none; stroke-width: 2px; stroke-width: 5px; stroke: #00aadd; }
-.area { stroke: none; fill: #00aadd; }
+.line { fill: none; stroke-width: 3px; stroke: #00aadd; }
+.area { stroke: none; fill: #00aadd; opacity: 0.2; }
+
+.lineGroup.line-0 .line { stroke: #3498db; }
+.lineGroup.line-1 .line { stroke: #2ecc71; }
+.lineGroup.line-2 .line { stroke: #e67e22; }
+.lineGroup.line-3 .line { stroke: #8e44ad; }
+.lineGroup.line-4 .line { stroke: #2c3e50; }
+.lineGroup.line-5 .line { stroke: #f1c40f; }
+.lineGroup.line-6 .line { stroke: #e67e22; }
+.lineGroup.line-7 .line { stroke: #e74c3c; }
+
+.lineGroup.line-0 .area { fill: #3498db; }
+.lineGroup.line-1 .area { fill: #2ecc71; }
+.lineGroup.line-2 .area { fill: #e67e22; }
+.lineGroup.line-3 .area { fill: #8e44ad; }
+.lineGroup.line-4 .area { fill: #2c3e50; }
+.lineGroup.line-5 .area { fill: #f1c40f; }
+.lineGroup.line-6 .area { fill: #e67e22; }
+.lineGroup.line-7 .area { fill: #e74c3c; }
+
+/* ==================
+Bar Charts
+===================== */
+.bar { fill: #3498db; transition: fill 0.25s; }
+.bar:hover { fill: #000 !important;  }
+
+.barGroup .bar-0.bar { fill: #3498db; }
+.barGroup .bar-1.bar { fill: #2ecc71; }
+.barGroup .bar-2.bar { fill: #e67e22; }
+.barGroup .bar-3.bar { fill: #8e44ad; }
+.barGroup .bar-4.bar { fill: #2c3e50; }
+.barGroup .bar-5.bar { fill: #f1c40f; }
+.barGroup .bar-6.bar { fill: #e67e22; }
+.barGroup .bar-7.bar { fill: #e74c3c; }
+
+
 
 /* ==================
 Tooltips 
@@ -83,9 +128,9 @@ Donut Charts
 }
 
 /* Default colors */
-.arc.arc-0 { fill: #16a085; }
-.arc.arc-1 { fill: #27ae60; }
-.arc.arc-2 { fill: #2980b9; }
+.arc.arc-0 { fill: #3498db; }
+.arc.arc-1 { fill: #2ecc71; }
+.arc.arc-2 { fill: #e67e22; }
 .arc.arc-3 { fill: #8e44ad; }
 .arc.arc-4 { fill: #2c3e50; }
 .arc.arc-5 { fill: #f1c40f; }

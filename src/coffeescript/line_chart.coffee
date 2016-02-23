@@ -31,13 +31,13 @@ class LineChart extends AbstractChart
   enterLines: (enter) ->
     enter
       .append("path")
-      .attr("class", (line) -> "line #{line.label}")
+      .attr("class", (line, i) -> "line")
 
   enterAreas: (enter) ->
     enter
       .filter((line) -> line.area == true)
       .append("path")
-      .attr("class", (line) -> "area #{line.label}")
+      .attr("class", (line, i) -> "area")
 
   createTooltip: () ->
     tip = (@tip ||= new Tooltip(document))
@@ -49,7 +49,11 @@ class LineChart extends AbstractChart
 
   render: () =>
     @svg.resize()
-    @x.range([0, @svg.width])
+    if @options.xScale == "ordinal"
+      @x.rangePoints([0, @svg.width])
+    else
+      @x.range([0, @svg.width])
+
     @y.range([@svg.height, 0])
 
     @axes.draw(@svg.width, @svg.height)
@@ -97,6 +101,7 @@ class LineChart extends AbstractChart
         copy.values[i] = { x: label, y: y, baseline: baseline, lineKey: line.label }
         baseline += y if stack
     {
+      labels: labels
       lines: lineCopies
       xDomain: [xMin, xMax]
       yDomain: [0, yMax]
@@ -104,9 +109,13 @@ class LineChart extends AbstractChart
 
   draw: (data) ->
     super()
-    { lines, xDomain, yDomain } = @formatData(data, @options.stack)
+    { labels, lines, xDomain, yDomain } = @formatData(data, @options.stack)
 
-    @x.domain(xDomain).nice()
+    if @options.xScale == "ordinal"
+      @x.domain(labels)
+    else
+      @x.domain(xDomain)
+
     @y.domain(yDomain).nice()
 
     @line
@@ -124,12 +133,12 @@ class LineChart extends AbstractChart
 
     # bind the line's data to the dom
     @lineGroups = @svg.chart
-      .selectAll(".lineGroup")
+      .selectAll(".line")
       .data(lines, (line) -> line.label)
 
     newGroups = @lineGroups.enter()
       .append("g")
-      .attr("class", "lineGroup")
+      .attr("class", (line, i) -> "lineGroup line-#{i} #{line.label}")
 
     @enterLines(newGroups)
     @enterAreas(newGroups)
@@ -144,7 +153,7 @@ class LineChart extends AbstractChart
       .selectAll(".dotGroup")
       .data(lines, (line) -> line.label)
 
-    @dotGroups.enter().append("g").attr("class", "dotGroup")
+    @dotGroups.enter().append("g").attr("class", (line, i) ->  "dotGroup line-#{i} #{line.label}")
     @dots = @dotGroups
       .selectAll(".dot")
       .data((line) =>
@@ -156,7 +165,7 @@ class LineChart extends AbstractChart
       .enter()
       .append("circle")
       .filter((d) -> d.y != null)
-      .attr("class", (point) -> "dot #{point.lineKey}")
+      .attr("class", (point) -> "dot")
       .attr("r", @options.dotSize)
 
     @createTooltip() if @options.tooltips

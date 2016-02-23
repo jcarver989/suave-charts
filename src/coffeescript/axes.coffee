@@ -1,13 +1,24 @@
 class Axes
-  constructor: (svg, xScale, yScale, @options) ->
+  constructor: (svg, @xScale, @yScale, @options) ->
     @xAxisSelection = svg.append("g")
       .attr("class", "x axis")
 
     @yAxisSelection = svg.append("g")
       .attr("class", "y axis")
 
-    @xAxis = @newAxis(xScale, "bottom")
-    @yAxis = @newAxis(yScale, "left")
+    @xAxis = @newAxis(@xScale, "bottom")
+    @yAxis = @newAxis(@yScale, "left")
+  
+  filterTicks: () ->
+    num = @options.ticks
+    domain = @xScale.domain()
+    step = Math.round(domain.length / (num - 2))
+    domain.filter((label, i) ->
+      if (i == 0 || label == domain[domain.length-1])
+        true
+      else
+        i % step == 0
+    )
 
   draw: (width, height) ->
     @xAxisSelection.attr("transform", "translate(0,#{height})")
@@ -27,7 +38,7 @@ class Axes
       @xAxis.ticks(ticks)
 
     else if @options.ticks? && @options.ticks > 0
-      @xAxis.ticks(@options.ticks)
+      @xAxis.tickValues(@filterTicks())
 
     @xAxisSelection.call @xAxis
     @yAxisSelection.call @yAxis
