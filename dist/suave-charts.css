@@ -9,29 +9,20 @@ Axes
   shape-rendering: crispEdges;
 }
 
+.tick line { stroke: #eee; }
+.axis .domain { stroke: #eee; }
+
 /* ==================
 Dots 
 ===================== */
-.dot {
-  stroke: #fff;
-  stroke-width: 3px;
-}
-
-.dot:hover {
-  fill: #000;
-}
+.dot { fill: #00aadd; stroke-width: 3px; stroke: #fff; transition: fill 0.5s ease-in-out; }
+.dot:hover { fill: #000; stroke: #000; }
 
 /* ==================
 Line Charts
 ===================== */
-.line {
-  fill: none;
-  stroke-width: 2px;
-}
-
-.area {
-  stroke: none;
-}
+.line { fill: none; stroke-width: 2px; stroke-width: 5px; stroke: #00aadd; }
+.area { stroke: none; fill: #00aadd; }
 
 /* ==================
 Tooltips 
