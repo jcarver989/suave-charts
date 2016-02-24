@@ -30,6 +30,7 @@ class LineChart extends AbstractChart
 
   enterLines: (enter) ->
     enter
+      .filter((line) -> line.line != false)
       .append("path")
       .attr("class", (line, i) -> "line")
 
