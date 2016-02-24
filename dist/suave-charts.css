@@ -68,6 +68,19 @@ Bar Charts
 .barGroup .bar-7.bar { fill: #e74c3c; }
 
 
+/* ==================
+Legends
+===================== */
+.legend span { display: block; float: left;  background: #fff; line-height: 1rem; margin-right: 1rem; }
+.legend span:before { display: block; float: left; margin-right: 0.5rem; height: 1rem; width: 1rem; content: "";  border-radius: 100%; }
+.legend .series-0:before { background: #3498db; }
+.legend .series-1:before { background: #2ecc71; }
+.legend .series-2:before { background: #e67e22; }
+.legend .series-3:before { background: #8e44ad; }
+.legend .series-4:before { background: #2c3e50; }
+.legend .series-5:before { background: #f1c40f; }
+.legend .series-6:before { background: #e67e22; }
+.legend .series-7:before { background: #e74c3c; }
 
 /* ==================
 Tooltips 
