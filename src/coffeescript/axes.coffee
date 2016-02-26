@@ -29,7 +29,7 @@ class Axes
       @xAxis.ticks(ticks)
 
     else if @options.ticks? && @options.ticks > 0
-      ticks = filterTicks(@options.ticks, @xScale)
+      ticks = filterTicks(@options.ticks, @xScale, @options.xScale)
       @xAxis.tickValues(ticks)
 
     @xAxisSelection.call @xAxis

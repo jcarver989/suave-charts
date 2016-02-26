@@ -90,7 +90,7 @@ class BarChart extends AbstractChart
     @groupedX.domain(normalizedBars[0].map((a, i) -> i))
 
     if @options.ticks? && @options.ticks > 0
-      @xAxis.tickValues(filterTicks(@options.ticks, @x))
+      @xAxis.tickValues(filterTicks(@options.ticks, @x, "ordinal"))
 
     if @options.layout == "vertical"
       @options.margin.left = @calc.calcLeftMargin(@yAxis, @options.margin.left)
