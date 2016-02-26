@@ -14,10 +14,12 @@ class Histogram extends AbstractChart
       .scale(@x)
       .outerTickSize(0)
       .tickFormat(@options.xLabelFormat)
+      .tickPadding(@axisLabelPadding)
 
     @yAxis = d3.svg.axis()
       .scale(@y)
       .tickFormat(@options.yLabelFormat)
+      .tickPadding(@axisLabelPadding)
 
     if @options.layout == "vertical"
       @xAxis.orient("bottom")
@@ -30,7 +32,7 @@ class Histogram extends AbstractChart
     @svg.resize()
     first = @histogram[0]
     layout = if @options.layout == "vertical"
-      @yAxis.tickSize(-@svg.width) if @options.grid
+      @yAxis.tickSize(-@svg.width, 0) if @options.grid
       {
         xRange: [0, @svg.width]
         yRange: [@svg.height, 0]
@@ -41,7 +43,7 @@ class Histogram extends AbstractChart
         barHeight: (d) => @svg.height - @y(d.y)
       }
     else
-      @yAxis.tickSize(-@svg.height) if @options.grid
+      @yAxis.tickSize(-@svg.height, 0) if @options.grid
       {
         xRange: [0, @svg.height]
         yRange: [0, @svg.width]

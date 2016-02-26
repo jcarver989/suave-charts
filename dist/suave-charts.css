@@ -4,13 +4,14 @@ Axes
 .axis path,
 .axis line {
   fill: none;
-  stroke: #444;
-  stroke-width: 2px;
+  stroke: #000;
+  stroke-width: 1px;
   shape-rendering: crispEdges;
 }
 
-.tick line { stroke: #eee; }
-.axis .domain { stroke: #eee; }
+.tick line { opacity: 0.15; }
+.tick text { font-size: 0.8rem; }
+
 
 /* ==================
 Dots 

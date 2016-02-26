@@ -6,6 +6,7 @@ class AbstractChart
     @options = defaults.mergeOptions(defaultOptions, options)
     @svg = new Svg(selector, @options.aspectRatio, @options.margin)
     @listenerBound = false
+    @axisLabelPadding = 10 
 
   draw: () ->
     unless @listenerBound

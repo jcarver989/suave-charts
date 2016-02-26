@@ -18,7 +18,6 @@ defaultLineOptions = {
   smoothLines: false # smooth chart lines 
   stack: false
   tooltips: true
-  tickPadding: 10
   xLabelFormat: null # uses default
   yLabelFormat: null # uses default
   tooltipFormat: (y) -> d3.format(",.0f")(y)

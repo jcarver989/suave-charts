@@ -1,7 +1,7 @@
 filterTicks = require('./filter_ticks')
 
 class Axes
-  constructor: (svg, @xScale, @yScale, @options) ->
+  constructor: (svg, @xScale, @yScale, @options, @axisLabelPadding) ->
     @xAxisSelection = svg.append("g")
       .attr("class", "x axis")
 
@@ -15,8 +15,8 @@ class Axes
     @xAxisSelection.attr("transform", "translate(0,#{height})")
 
     if @options.grid
-      @xAxis.tickSize(-height)
-      @yAxis.tickSize(-width)
+      @xAxis.tickSize(-height, 0)
+      @yAxis.tickSize(-width, 0)
 
     if @options.xLabelInterval
       ticks = switch @options.xLabelInterval
@@ -39,6 +39,6 @@ class Axes
     d3.svg.axis()
       .scale(scale)
       .orient(orientation)
-      .tickPadding(@options.tickPadding)
+      .tickPadding(@axisLabelPadding)
 
 module.exports = Axes

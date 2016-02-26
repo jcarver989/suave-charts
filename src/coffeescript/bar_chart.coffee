@@ -14,12 +14,14 @@ class BarChart extends AbstractChart
 
     @xAxis = d3.svg.axis()
       .scale(@x)
-      .outerTickSize(0)
       .tickFormat(@options.xLabelFormat)
+      .outerTickSize(0)
+      .tickPadding(@axisLabelPadding)
 
     @yAxis = d3.svg.axis()
       .scale(@y)
       .tickFormat(@options.yLabelFormat)
+      .tickPadding(@axisLabelPadding)
 
     if @options.layout == "vertical"
       @xAxis.orient("bottom")
@@ -32,7 +34,7 @@ class BarChart extends AbstractChart
     @svg.resize()
 
     layout = if @options.layout == "vertical"
-      @yAxis.tickSize(-@svg.width) if @options.grid
+      @yAxis.tickSize(-@svg.width, 0) if @options.grid
 
       {
        xTransform: "translate(0, #{@svg.height})",
@@ -46,7 +48,7 @@ class BarChart extends AbstractChart
        barHeight: (barValue) => @svg.height - @y(barValue)
       }
     else
-      @yAxis.tickSize(-@svg.height) if @options.grid
+      @yAxis.tickSize(-@svg.height, 0) if @options.grid
       {
        xTransform: "",
        yTransform: "translate(0, #{@svg.height})",

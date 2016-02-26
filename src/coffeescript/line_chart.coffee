@@ -10,7 +10,7 @@ class LineChart extends AbstractChart
     super(selector, defaultLineOptions, options)
     @x = Scales.fromString(@options.xScale)
     @y = Scales.fromString(@options.yScale)
-    @axes = new Axes(@svg.chart, @x, @y, @options)
+    @axes = new Axes(@svg.chart, @x, @y, @options, @axisLabelPadding)
 
     @isTimeSeries = true if @options.xScale == "time"
 
