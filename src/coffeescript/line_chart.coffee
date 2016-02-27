@@ -83,6 +83,7 @@ class LineChart extends AbstractChart
     xMin = null
     xMax = null
     yMax = null
+    yMin = null
     
     lineCopies = []
     for line, i in data.lines
@@ -97,15 +98,18 @@ class LineChart extends AbstractChart
         yb = y + baseline
         xMin = label if !xMin? || xMin > label
         xMax = label if !xMax? || xMax < label
+        yMin = yb if !yMin? || yMin > yb
         yMax = yb if !yMax? || yMax < yb
         copy = lineCopies[j]
         copy.values[i] = { x: label, y: y, baseline: baseline, lineKey: line.label }
         baseline += y if stack
+
+    yStart = if @options.yScale == "log" then yMin else 0
     {
       labels: labels
       lines: lineCopies
       xDomain: [xMin, xMax]
-      yDomain: [0, yMax]
+      yDomain: [yStart, yMax]
     }
 
   draw: (data) ->
