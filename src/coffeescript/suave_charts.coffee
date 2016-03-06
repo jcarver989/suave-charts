@@ -3,4 +3,7 @@ m.LineChart = require('./line_chart')
 m.BarChart = require('./bar_chart')
 m.Histogram = require('./histogram')
 m.DonutChart = require('./donut_chart')
-window.Suave = m
+
+((mod) ->
+  if mod.isBrowser then window.Suave = m else mod.exports = m
+)(if typeof module == "undefined" then { isBrowser: true } else module)
