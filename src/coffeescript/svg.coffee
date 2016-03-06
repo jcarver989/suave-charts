@@ -3,7 +3,12 @@ class Svg
     [w, h] = aspectRatio.split(":")
     @aspectRatio = [parseInt(w), parseInt(h)]
 
-    @domElement = document.querySelector(selector)
+    # allow users to pass in a node or a selector string
+    @domElement = if typeof selector == "string"
+      document.querySelector(selector)
+    else
+      selector
+
     @container = d3
       .select(@domElement)
       .append("svg")
