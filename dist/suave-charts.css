@@ -87,7 +87,7 @@ Legends
 Tooltips 
 ===================== */
 .suave-tooltip {
-  position: absolute;
+  position: fixed;
   height: 30px;
   line-height: 30px;
   padding: 0px 12px 0;
