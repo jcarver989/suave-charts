@@ -15,6 +15,7 @@ class AbstractChart
 
   remove: () ->
     window.removeEventListener("resize", @render)
+    @tip.remove() if @tip?
     element = @svg.domElement
     while element.firstChild
       element.removeChild(element.firstChild)

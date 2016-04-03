@@ -20,6 +20,9 @@ class Tooltip
   hide: () =>
     @tip.attr("class", @cssClass)
 
+  remove: () =>
+    @tip.remove()
+
   offset: (node) ->
     nodeCoords = node.getBoundingClientRect()
     nodeCenter = nodeCoords.left + ((nodeCoords.right - nodeCoords.left) / 2)
