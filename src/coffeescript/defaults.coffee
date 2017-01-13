@@ -22,10 +22,12 @@ defaultLineOptions = {
   yLabelFormat: null # uses default
   tooltipFormat: (y) -> d3.format(",.0f")(y)
   ticks: 10
+  yTicks: 10
+  legend: false
   margin: {
-    top: 50,
-    bottom: 50,
-    right: 80,
+    top: 50
+    bottom: 50
+    right: 80
     left: 80
   }
 

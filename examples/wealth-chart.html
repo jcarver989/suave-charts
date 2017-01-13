@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+  <head>
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,900,900italic,300,100' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="../dist/suave-charts.css">
+    <link rel="stylesheet" type="text/css" href="vendor/foundation.css">
+    <link rel="stylesheet" type="text/css" href="vendor/prism.css">
+    <style>
+      h1,h2,h3 {
+        font-family: 'Lato', sans-serif;
+        text-align: center;
+      }
+      h1 {
+        font-weight: 900;
+        margin-top: 5rem;
+      }
+
+      h3 { font-weight: 400; }
+
+      code, pre[class*="language"] {
+        border: none;
+        box-shadow: none;
+      }
+      
+    </style>
+
+    <style id="css1">
+/* Color line1 blue */
+.line1.line { stroke: #00aadd; }
+.line1.area, .line1.dot { fill: #00aadd; }
+
+/* Color line2 green */
+.line2.line { stroke: #1dd0ad; }
+.line2.area, .line2.dot { fill: #1dd0ad; } 
+
+/* Make the grid lines light gray */
+.tick line { stroke: #eee; }
+.domain { display: none; }
+
+/* Set shared styles for lines, shaded areas and dots */
+.line { stroke-width: 5px; }
+.area { opacity: 0.2; }
+.dot { stroke-width: 3px; transition: fill  0.5s ease-in-out; }
+.dot:hover { fill: #000; stroke: #000; }
+</style>
+
+  </head>
+  <body>
+    <div class="row">
+      <h1>Time Series Chart</h1>
+      <h3>Two lines with smoothing</h3>
+      <div class="large-12 columns">
+        <div id="chart"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="large-6 columns">
+        <h3>Javascript</h3>
+        <div id="jsExample1"></div>
+      </div>
+
+      <div class="large-6 columns">
+        <h3>HTML</h3>
+        <pre><code class="language-html">
+&lt;link rel="stylesheet" type="text/css" href="../dist/suave-charts.css"&gt;
+&lt;script src="vendor/d3.min.js"&gt;&lt;/script&gt;
+&lt;script src="../dist/suave-charts.min.js"&gt;&lt;/script&gt;
+&lt;div id="chart"&gt;&lt;/div&gt;
+        </code></pre>
+        <h3>CSS</h3>
+        <div id="cssExample1"></div>
+      </div>
+    </div>
+    
+    <script src="vendor/d3.min.js"></script>
+    <script src="../dist/suave-charts.min.js"></script>
+    <script id="js1">
+// Makeup some data:
+var xLabels = [
+  new Date("Jan 1, 2014").getTime(),
+  new Date("Jan 2, 2014").getTime(),
+  new Date("Jan 3, 2014").getTime(),
+  new Date("Jan 4, 2014").getTime(),
+  new Date("Jan 5, 2014").getTime(),
+  new Date("Jan 6, 2014").getTime(),
+  new Date("Jan 7, 2014").getTime(),
+  new Date("Jan 8, 2014").getTime()
+]
+
+var data = [
+  10,
+  200,
+  3000,
+  10,
+  5000,
+  400,
+  2000,
+  10000
+]
+
+// And some more data
+var data2 = data.map(function(d) { return d * 3 })
+
+// Create a line chart
+chart = new Suave.LineChart("#chart", {
+  xScale: "time",
+  xLabelInterval: "days",
+  xLabelFormat: "%d/%m/%Y"
+})
+
+// Draw the chart
+chart.draw({ 
+  labels: xLabels,
+  lines: [
+    { label: "line1", values: data, baselineValues: data2, area: true, smooth: true  },
+  ]
+})
+    </script>
+
+    <script src="vendor/code.js"></script>
+    <script>
+      codify("#css1", "#cssExample1", "language-css")
+      codify("#js1", "#jsExample1", "language-javascript")
+    </script>
+    <script src="vendor/prism.js"></script>
+  </body>
+</html>

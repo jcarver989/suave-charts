@@ -28,7 +28,7 @@ class DonutChart extends AbstractChart
     arcSelection = @svg.chart.selectAll(".arc").data(@pie(data))
     @enter = arcSelection.enter()
       .append("g")
-      .attr("class", (d, i) -> "arc arc-#{i} arc-#{d.data[0]}}")
+      .attr("class", (d, i) -> "arc arc-#{i} arc-#{d.data[0]}")
 
     @arcs = @enter.append("path")
     @labels = @enter.append("text")

@@ -70,7 +70,7 @@ class LineChart extends AbstractChart
     
     @dots
       .attr("cx", (point) => @x(point.x))
-      .attr("cy", (point) => @y(point.y + point.baseline))
+      .attr("cy", (point) => @y(point.y + point.yTranslation))
 
   chooseInterpolation: (line) -> if line.smooth then "monotone" else "linear"
 
@@ -92,17 +92,19 @@ class LineChart extends AbstractChart
         lineCopies[i][key] = val
 
     for label, i in labels
-      baseline = 0
+      areaY0 = 0
+      yTranslation = 0
       for line, j in data.lines
         y = line.values[i]
-        yb = y + baseline
+        yb = y + yTranslation
         xMin = label if !xMin? || xMin > label
         xMax = label if !xMax? || xMax < label
         yMin = yb if !yMin? || yMin > yb
         yMax = yb if !yMax? || yMax < yb
         copy = lineCopies[j]
-        copy.values[i] = { x: label, y: y, baseline: baseline, lineKey: line.label }
-        baseline += y if stack
+        areaY0 = line.baselineValues[i] if line.baselineValues?
+        copy.values[i] = { x: label, y: y, yTranslation: yTranslation, areaY0: areaY0, lineKey: line.label }
+        yTranslation += y if stack
 
     yStart = if @options.yScale == "log" then yMin else 0
     {
@@ -125,12 +127,12 @@ class LineChart extends AbstractChart
 
     @line
     .x((d) => @x(d.x))
-    .y((d) => @y(d.y + d.baseline))
+    .y((d) => @y(d.y + d.yTranslation))
 
     @area
     .x((d) => @x(d.x))
-    .y0((d) => @y(d.baseline))
-    .y1((d) => @y(d.y + d.baseline))
+    .y0((d) => @y(d.areaY0 + d.yTranslation))
+    .y1((d) => @y(d.y + d.yTranslation))
 
     # dynamically choose the left margin
     if @options.autoMargins

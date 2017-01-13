@@ -26,12 +26,15 @@ class Axes
         when "days" then d3.time.days
         when "months" then d3.time.months
         when "years" then d3.time.years
-      @xAxis.ticks(ticks)
+
+      step = if @options.tickStepSize? then @options.tickStepSize else 1
+      @xAxis.ticks(ticks, step)
 
     else if @options.ticks? && @options.ticks > 0
       ticks = filterTicks(@options.ticks, @xScale, @options.xScale)
       @xAxis.tickValues(ticks)
 
+    @yAxis.ticks(@options.yTicks)
     @xAxisSelection.call @xAxis
     @yAxisSelection.call @yAxis
 
