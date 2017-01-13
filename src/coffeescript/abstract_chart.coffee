@@ -8,6 +8,12 @@ class AbstractChart
     @listenerBound = false
     @axisLabelPadding = 10 
 
+  waitToBeInDom: (func) -> 
+    if document.body.contains(@svg.container[0][0])
+      func()
+    else
+      setTimeout(func, 100)
+
   draw: () ->
     unless @listenerBound
       window.addEventListener("resize", @render)

@@ -24,6 +24,9 @@ class DonutChart extends AbstractChart
     
   draw: (data) =>
     super()
+    @waitToBeInDom(() => @drawInternal(data))
+
+  drawInternal: (data) =>
     s = (sum, d) -> sum + d[1]
     arcSelection = @svg.chart.selectAll(".arc").data(@pie(data))
     @enter = arcSelection.enter()

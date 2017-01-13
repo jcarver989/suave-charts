@@ -83,6 +83,9 @@ class BarChart extends AbstractChart
 
   draw: (data) ->
     super()
+    @waitToBeInDom(() => @drawInternal(data))
+
+  drawInternal: (data) ->
     normalizedBars = ((if Object.prototype.toString.call(d) == "[object Array]" then d else [d]) for d in data.bars)
 
     @y.domain([0, d3.max(d3.merge(normalizedBars, (bars) -> d3.max(bars)))])

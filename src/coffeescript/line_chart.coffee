@@ -116,6 +116,9 @@ class LineChart extends AbstractChart
 
   draw: (data) ->
     super()
+    @waitToBeInDom(() => @drawInternal(data))
+
+  drawInternal: (data) ->
     { labels, lines, xDomain, yDomain } = @formatData(data, @options.stack)
 
     if @options.xScale == "ordinal"

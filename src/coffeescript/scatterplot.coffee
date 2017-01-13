@@ -3,6 +3,10 @@ class ScatterPlot extends AbstractChart
     super(selector, options)
 
   draw: (data) ->
+    super()
+    @waitToBeInDom(() => @drawInternal(data))
+
+  drawInternal: (data) ->
     @x.domain d3.extent(data, extractX)
     @y.domain [0, d3.max(data, extractY)]
 

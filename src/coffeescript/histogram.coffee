@@ -73,6 +73,9 @@ class Histogram extends AbstractChart
 
   draw: (data) ->
     super()
+    @waitToBeInDom(() => @drawInternal(data))
+
+  drawInternal: (data) ->
     hist = d3.layout.histogram()
     if @options.domain
       @x.domain(@options.domain)
