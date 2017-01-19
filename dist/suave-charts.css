@@ -28,6 +28,11 @@ Dots
 .dotGroup.line-6 .dot { fill: #e67e22; }
 .dotGroup.line-7 .dot { fill: #e74c3c; }
 
+.drag-handle {
+  stroke: #000;
+  fill: #fff;
+  cursor: ns-resize;
+}
 
 /* ==================
 Line Charts

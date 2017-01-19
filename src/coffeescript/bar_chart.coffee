@@ -33,6 +33,7 @@ class BarChart extends AbstractChart
   render: () =>
     @svg.resize()
 
+    y = @y
     layout = if @options.layout == "vertical"
       @yAxis.tickSize(-@svg.width, 0) if @options.grid
 
@@ -43,9 +44,9 @@ class BarChart extends AbstractChart
        xRange: [0, @svg.width],
        yRange: [@svg.height, 0],
        barX: (barValue, i) => @groupedX(i),
-       barY: (barValue) => @y(barValue),
+       barY: (barValue) => @y(barValue.value),
        barWidth: () => @groupedX.rangeBand(),
-       barHeight: (barValue) => @svg.height - @y(barValue)
+       barHeight: (barValue) => @svg.height - @y(barValue.value)
       }
     else
       @yAxis.tickSize(-@svg.height, 0) if @options.grid
@@ -58,7 +59,7 @@ class BarChart extends AbstractChart
        barX: (barValue) => 0,
        barY: (barValue, i) => @groupedX(i),
        barHeight: () => @groupedX.rangeBand(),
-       barWidth: (barValue) => @y(barValue)
+       barWidth: (barValue) => @y(barValue.value)
       }
 
     @x.rangeRoundBands(layout.xRange, .1)
@@ -80,6 +81,26 @@ class BarChart extends AbstractChart
       .attr("y", layout.barY)
       .attr("width", layout.barWidth)
       .attr("height", layout.barHeight)
+
+    drag = d3.behavior.drag()
+      .on("drag", (e) ->
+        handle = d3.select(this)
+        value = Math.max(5, Math.min(layout.yRange[0] - 5, d3.event.y))
+        invertedValue = y.invert(value) # so we can figure out how to re-size the rect
+        handle.attr("cy",  value)
+        rect = d3
+          .select(this.parentNode)
+          .select("rect")
+          .attr("height", layout.barHeight({ value: invertedValue }))
+          .attr("y", layout.barY({ value: invertedValue }))
+        e.value = invertedValue
+      )
+
+    @dots
+       .attr("cx", (d,i) -> layout.barX(d,i) + 0.5 * layout.barWidth())
+       .attr("cy", layout.barY)
+       .attr("class", "drag-handle")
+       .call(drag)
 
   draw: (data) ->
     super()
@@ -115,17 +136,24 @@ class BarChart extends AbstractChart
       .append("g")
       .attr("class", (label, i) -> "barGroup barGroup-#{i} #{label}")
 
-    @bars = @groups.selectAll(".bar")
-      .data((label, i) -> normalizedBars[i])
+    @barGroups = @groups.selectAll(".bar")
+      .data((label, i) -> normalizedBars[i].map((v) -> { value: v }))
       .enter()
-      .append("rect")
+      .append("g")
       .attr("class", (barValue, i) -> "bar bar-#{i}")
-    
+
+      
+    @bars = @barGroups.append("rect")
+
+    @dots = @barGroups
+      .append("circle")
+      .attr("r", 5)
+
     if @options.tooltips
       tooltipFormat = @options.tooltipFormat
       tip = (@tip ||= new Tooltip(document))
       @bars.on("mouseover", (d) ->
-        tip.html(tooltipFormat(d))
+        tip.html(tooltipFormat(d.value))
         tip.show(this))
 
       @bars.on("mouseout", (d) -> tip.hide())
