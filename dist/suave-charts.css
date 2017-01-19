@@ -73,6 +73,11 @@ Bar Charts
 .barGroup .bar-6.bar { fill: #e67e22; }
 .barGroup .bar-7.bar { fill: #e74c3c; }
 
+#total { fill: #2ecc71; }
+#totalBackground { 
+  fill: #555;
+  fill-opacity: 0.5;
+}
 
 /* ==================
 Legends

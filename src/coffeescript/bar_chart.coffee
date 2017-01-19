@@ -34,33 +34,19 @@ class BarChart extends AbstractChart
     @svg.resize()
 
     y = @y
-    layout = if @options.layout == "vertical"
-      @yAxis.tickSize(-@svg.width, 0) if @options.grid
-
-      {
-       xTransform: "translate(0, #{@svg.height})",
-       yTransform: "",
-       groupsTransform: (label) => "translate(#{@x(label)}, 0)",
-       xRange: [0, @svg.width],
-       yRange: [@svg.height, 0],
-       barX: (barValue, i) => @groupedX(i),
-       barY: (barValue) => @y(barValue.value),
-       barWidth: () => @groupedX.rangeBand(),
-       barHeight: (barValue) => @svg.height - @y(barValue.value)
-      }
-    else
-      @yAxis.tickSize(-@svg.height, 0) if @options.grid
-      {
-       xTransform: "",
-       yTransform: "translate(0, #{@svg.height})",
-       groupsTransform: (label) => "translate(0, #{@x(label)})",
-       xRange: [0, @svg.height],
-       yRange: [0, @svg.width],
-       barX: (barValue) => 0,
-       barY: (barValue, i) => @groupedX(i),
-       barHeight: () => @groupedX.rangeBand(),
-       barWidth: (barValue) => @y(barValue.value)
-      }
+    @yAxis.tickSize(-@svg.width, 0) if @options.grid
+    layout = {
+      xTransform: "translate(0, #{@svg.height})",
+      yTransform: "",
+      groupsTransform: (label) => "translate(#{@x(label)}, 0)",
+      xRange: [0, @svg.width],
+      yRange: [@svg.height, 0],
+      barX: (barValue, i) => @groupedX(i),
+      barY: (barValue) => @y(barValue.value),
+      barWidth: () => @groupedX.rangeBand(),
+      barHeight: (barValue) => @svg.height - @y(barValue.value)
+    }
+  
 
     @x.rangeRoundBands(layout.xRange, .1)
     @groupedX.rangeRoundBands([0, @x.rangeBand()], @options.barSpacing)
@@ -82,23 +68,60 @@ class BarChart extends AbstractChart
       .attr("width", layout.barWidth)
       .attr("height", layout.barHeight)
 
+    sum = () =>
+      s = 0
+      @bars.each((d) -> s += d.value)
+      s
+
+    @totalBar
+      .datum({value: sum() })
+      .attr("x", layout.barX)
+      .attr("y", layout.barY)
+      .attr("width", layout.barWidth)
+      .attr("height", layout.barHeight)
+
+    @totalBarBackground
+      .datum({ value: 100 })
+      .attr("x", layout.barX)
+      .attr("y", layout.barY)
+      .attr("width", layout.barWidth)
+      .attr("height", layout.barHeight)
+
+    
+    limit = (value, min, max) ->
+      if (value >= max)
+        max
+      else if value <= min
+        min
+      else 
+        value
+
+    totalBar = @totalBar
     drag = d3.behavior.drag()
       .on("drag", (e) ->
+        invertedValue = y.invert(d3.event.y)
+        delta = invertedValue - e.value
+        totalBarValue = sum()
+        value = limit(invertedValue, 0, (100 - totalBarValue) + e.value)
+
+        totalBar
+          .attr("height", layout.barHeight({ value: totalBarValue }))
+          .attr("y", layout.barY({ value: totalBarValue }))
+
         handle = d3.select(this)
-        value = Math.max(5, Math.min(layout.yRange[0] - 5, d3.event.y))
-        invertedValue = y.invert(value) # so we can figure out how to re-size the rect
-        handle.attr("cy",  value)
+        handle.attr("cy",  y(value))
         rect = d3
           .select(this.parentNode)
           .select("rect")
-          .attr("height", layout.barHeight({ value: invertedValue }))
-          .attr("y", layout.barY({ value: invertedValue }))
-        e.value = invertedValue
+          .attr("height", layout.barHeight({ value: value }))
+          .attr("y", layout.barY({ value: value }))
+        e.value = value
+        totalBar.each((d) -> d.value = sum())
       )
 
     @dots
        .attr("cx", (d,i) -> layout.barX(d,i) + 0.5 * layout.barWidth())
-       .attr("cy", layout.barY)
+       .attr("cy", (d) -> layout.barY(d) + 2.5)
        .attr("class", "drag-handle")
        .call(drag)
 
@@ -107,9 +130,11 @@ class BarChart extends AbstractChart
     @waitToBeInDom(() => @drawInternal(data))
 
   drawInternal: (data) ->
+    data.labels.push("Total")
     normalizedBars = ((if Object.prototype.toString.call(d) == "[object Array]" then d else [d]) for d in data.bars)
+    normalizedBars.push([100])
 
-    @y.domain([0, d3.max(d3.merge(normalizedBars, (bars) -> d3.max(bars)))])
+    @y.domain([0, 100])
     @x.domain(data.labels)
     @groupedX.domain(normalizedBars[0].map((a, i) -> i))
 
@@ -118,11 +143,6 @@ class BarChart extends AbstractChart
 
     if @options.layout == "vertical"
       @options.margin.left = @calc.calcLeftMargin(@yAxis, @options.margin.left)
-    else
-      # in order to calc the margin on the oridinal scale we need to set range round bands 
-      # on the scale as a hack
-      @x.rangeRoundBands([0, 10], .1)
-      @options.margin.left = @calc.calcLeftMargin(@xAxis, @options.margin.left, "x")
 
     @xAxisSelection = @svg.chart.append("g")
       .attr("class", "x axis")
@@ -143,9 +163,25 @@ class BarChart extends AbstractChart
       .attr("class", (barValue, i) -> "bar bar-#{i}")
 
       
-    @bars = @barGroups.append("rect")
+    @bars = @barGroups
+      .filter((data, zero, i) -> i + 1 < normalizedBars.length)
+      .append("rect")
+
+    # total bar
+    @totalBarGroup = @barGroups
+      .filter((data, zero, i) -> i + 1 == normalizedBars.length)
+      .append("g")
+
+    @totalBarBackground = @totalBarGroup
+      .append("rect")
+      .attr("id", "totalBackground")
+
+    @totalBar = @totalBarGroup
+      .append("rect")
+      .attr("id", "total")
 
     @dots = @barGroups
+      .filter((data, zero, i) -> i + 1 < normalizedBars.length)
       .append("circle")
       .attr("r", 5)
 
@@ -157,6 +193,13 @@ class BarChart extends AbstractChart
         tip.show(this))
 
       @bars.on("mouseout", (d) -> tip.hide())
+
+      @totalBar.on("mouseover", (d) ->
+        tip.html(tooltipFormat(d.value))
+        tip.show(this))
+
+      @totalBar.on("mouseout", (d) -> tip.hide())
+
     @render()
     
 module.exports = BarChart
