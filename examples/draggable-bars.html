@@ -27,6 +27,8 @@
   <body>
     <div class="row">
       <div class="large-12 columns">
+        <h2>You have $5,000 left each month to use towards your goals</h2>
+        <h3>Give every dollar a job by dragging the bars</h3>
         <div id="chart"></div>
       </div>
     </div>
@@ -58,6 +60,7 @@ var chart = new Suave.BarChart("#chart", {
 
 // Draw the chart
 chart.draw({
+  domainLabel: "Leftover Money",
   domain: [0, 5000],
   labels: [
     "Emergency Savings",
@@ -65,7 +68,7 @@ chart.draw({
     "Roth IRA",
     "Wedding",
     "Vacation",
-    "After Tax"
+    "Guilt Free Spending"
   ],
 
   bars: [

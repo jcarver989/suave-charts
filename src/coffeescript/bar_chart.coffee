@@ -143,7 +143,7 @@ class BarChart extends AbstractChart
       0
     )
 
-    barData = [{ value: startingTotal, label: "Free Spending" }]
+    barData = [{ value: startingTotal, label: data.domainLabel }]
     data.bars.forEach((v, i) -> barData.push({ value: v, label: data.labels[i] }))
 
     @y.domain(data.domain)
@@ -182,7 +182,7 @@ class BarChart extends AbstractChart
     # total bar
     @totalBarGroup = @barGroups
       .filter((data, i) -> i == 0)
-      .datum({ value: @sum(), label: "Free Spending"})
+      .datum({ value: @sum(), label: data.domainLabel})
       .append("g")
       .attr("class", "total")
 
