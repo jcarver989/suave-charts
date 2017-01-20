@@ -53,9 +53,13 @@
     <script src="../dist/suave-charts.min.js"></script>
     <script id="js1">
 // Create a bar chart
-var chart = new Suave.BarChart("#chart", {
+function formatMoney(y) {
+  return "$" + d3.format(",.0f")(y)
+}
+var chart = new Suave.GoalsChart("#chart", {
   layout: "vertical",
-  tooltipFormat: function(y) { return "$" + d3.format(",.0f")(y) }
+  yLabelFormat: formatMoney,
+  tooltipFormat: formatMoney
 })
 
 // Draw the chart

@@ -4,7 +4,7 @@ Tooltip = require('./tooltip')
 defaultBarOptions = require('./defaults').barOptions
 filterTicks = require('./filter_ticks')
 
-class BarChart extends AbstractChart
+class GoalsChart extends AbstractChart
   constructor: (selector, options = {}) ->
     super(selector, defaultBarOptions, options)
     @calc = new MarginCalculator(@svg)
@@ -200,4 +200,4 @@ class BarChart extends AbstractChart
 
     @render()
 
-module.exports = BarChart
+module.exports = GoalsChart
