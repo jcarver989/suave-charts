@@ -9,7 +9,6 @@ class BarChart extends AbstractChart
     super(selector, defaultBarOptions, options)
     @calc = new MarginCalculator(@svg)
     @x = d3.scale.ordinal()
-    @groupedX = d3.scale.ordinal()
     @y = d3.scale.linear()
 
     @xAxis = d3.svg.axis()
@@ -23,33 +22,31 @@ class BarChart extends AbstractChart
       .tickFormat(@options.yLabelFormat)
       .tickPadding(@axisLabelPadding)
 
-    if @options.layout == "vertical"
-      @xAxis.orient("bottom")
-      @yAxis.orient("left")
-    else
-      @xAxis.orient("left")
-      @yAxis.orient("bottom")
+    @xAxis.orient("bottom")
+    @yAxis.orient("left")
+    @tipPadding = 20
+
+  sum: () =>
+    s = @y.domain()[1]
+    @bars.each((d) -> s -= d.value)
+    s
 
   render: () =>
     @svg.resize()
-
-    y = @y
-    @yAxis.tickSize(-@svg.width, 0) if @options.grid
+    @x.rangeRoundBands([0, @svg.width])
     layout = {
       xTransform: "translate(0, #{@svg.height})",
       yTransform: "",
       groupsTransform: (label) => "translate(#{@x(label)}, 0)",
       xRange: [0, @svg.width],
       yRange: [@svg.height, 0],
-      barX: (barValue, i) => @groupedX(i),
-      barY: (barValue) => @y(barValue.value),
-      barWidth: () => @groupedX.rangeBand(),
-      barHeight: (barValue) => @svg.height - @y(barValue.value)
+      barX: (bar) => @x(bar.label),
+      barY: (bar) => @y(bar.value),
+      barWidth: () => @x.rangeBand(),
+      barHeight: (bar) => @svg.height - @y(bar.value)
     }
-  
 
-    @x.rangeRoundBands(layout.xRange, .1)
-    @groupedX.rangeRoundBands([0, @x.rangeBand()], @options.barSpacing)
+    @x.rangeRoundBands(layout.xRange, @options.barSpacing)
     @y.range(layout.yRange)
 
     @xAxisSelection
@@ -60,67 +57,76 @@ class BarChart extends AbstractChart
       .attr("transform", layout.yTransform)
       .call(@yAxis)
 
-    @groups.attr("transform", layout.groupsTransform)
-
     @bars
       .attr("x", layout.barX)
       .attr("y", layout.barY)
       .attr("width", layout.barWidth)
       .attr("height", layout.barHeight)
 
-    sum = () =>
-      s = 0
-      @bars.each((d) -> s += d.value)
-      s
-
     @totalBar
-      .datum({value: sum() })
       .attr("x", layout.barX)
       .attr("y", layout.barY)
       .attr("width", layout.barWidth)
       .attr("height", layout.barHeight)
 
     @totalBarBackground
-      .datum({ value: 100 })
       .attr("x", layout.barX)
-      .attr("y", layout.barY)
+      .attr("y", 0)
       .attr("width", layout.barWidth)
-      .attr("height", layout.barHeight)
+      .attr("height", @y.range()[0])
 
-    
-    limit = (value, min, max) ->
-      if (value >= max)
-        max
-      else if value <= min
-        min
-      else 
-        value
+    @tooltips
+      .attr("x", (d) => layout.barX(d) + 0.5 * layout.barWidth())
+      .attr("y", (d) => Math.min(layout.barY(d) - @tipPadding, @svg.height - @tipPadding))
+      .text((d) => @options.tooltipFormat(d.value))
+
+    @totalBarTooltip
+      .attr("x", (d) => layout.barX(d) + 0.5 * layout.barWidth())
+      .attr("y", (d) => Math.min(layout.barY(d) - @tipPadding, @svg.height - @tipPadding))
+      .text((d) => @options.tooltipFormat(d.value))
+
 
     totalBar = @totalBar
+    totalBarTooltip = @totalBarTooltip
+    x = @x
+    y = @y
+    sum = @sum
+    tooltipFormat = @options.tooltipFormat
+    tipPadding = @tipPadding
     drag = d3.behavior.drag()
       .on("drag", (e) ->
-        invertedValue = y.invert(d3.event.y)
-        delta = invertedValue - e.value
+        # have an existing value. The new value's delta can't exceed the remaining space
         totalBarValue = sum()
-        value = limit(invertedValue, 0, (100 - totalBarValue) + e.value)
-
-        totalBar
-          .attr("height", layout.barHeight({ value: totalBarValue }))
-          .attr("y", layout.barY({ value: totalBarValue }))
+        delta = Math.min(Math.round(y.invert(d3.event.y) - e.value), totalBarValue)
+        newValue = Math.max(0, Math.min(e.value + delta, y.domain()[1]))
+        e.value = newValue
 
         handle = d3.select(this)
-        handle.attr("cy",  y(value))
-        rect = d3
-          .select(this.parentNode)
+        handle.attr("cy",  y(newValue))
+        parent = d3.select(this.parentNode)
+        parent
           .select("rect")
-          .attr("height", layout.barHeight({ value: value }))
-          .attr("y", layout.barY({ value: value }))
-        e.value = value
-        totalBar.each((d) -> d.value = sum())
+          .attr("height", layout.barHeight({ value: newValue }))
+          .attr("y", layout.barY({ value: newValue }))
+
+        parent
+          .select("text")
+          .attr("y", (d) -> layout.barY(d) - tipPadding)
+          .text(tooltipFormat(newValue))
+
+        newTotalBarValue = sum()
+        totalBar.each((d) -> d.value = newTotalBarValue)
+        totalBar
+          .attr("height", layout.barHeight({ value: newTotalBarValue }))
+          .attr("y", layout.barY({ value: newTotalBarValue }))
+
+        totalBarTooltip
+          .attr("y", layout.barY({ value: newTotalBarValue }) - tipPadding)
+          .text(tooltipFormat(newTotalBarValue))
       )
 
     @dots
-       .attr("cx", (d,i) -> layout.barX(d,i) + 0.5 * layout.barWidth())
+       .attr("cx", (d) -> layout.barX(d) + 0.5 * layout.barWidth())
        .attr("cy", (d) -> layout.barY(d) + 2.5)
        .attr("class", "drag-handle")
        .call(drag)
@@ -130,76 +136,66 @@ class BarChart extends AbstractChart
     @waitToBeInDom(() => @drawInternal(data))
 
   drawInternal: (data) ->
-    data.labels.push("Total")
-    normalizedBars = ((if Object.prototype.toString.call(d) == "[object Array]" then d else [d]) for d in data.bars)
-    normalizedBars.push([100])
+    startingTotal = data.bars.reduce(
+      (a, b) -> a + b,
+      0
+    )
 
-    @y.domain([0, 100])
-    @x.domain(data.labels)
-    @groupedX.domain(normalizedBars[0].map((a, i) -> i))
+    barData = [{ value: startingTotal, label: "Free Spending" }]
+    data.bars.forEach((v, i) -> barData.push({ value: v, label: data.labels[i] }))
 
-    if @options.ticks? && @options.ticks > 0
-      @xAxis.tickValues(filterTicks(@options.ticks, @x, "ordinal"))
+    @y.domain(data.domain)
+    @x.domain(barData.map((d) -> d.label))
 
-    if @options.layout == "vertical"
-      @options.margin.left = @calc.calcLeftMargin(@yAxis, @options.margin.left)
+    @options.margin.left = @calc.calcLeftMargin(@yAxis, @options.margin.left)
 
     @xAxisSelection = @svg.chart.append("g")
       .attr("class", "x axis")
 
     @yAxisSelection = @svg.chart.append("g")
       .attr("class", "y axis")
-    
+
     @groups = @svg.chart.selectAll(".barGroup")
-      .data(data.labels)
+      .data(barData)
       .enter()
       .append("g")
-      .attr("class", (label, i) -> "barGroup barGroup-#{i} #{label}")
+      .attr("class", (bar, i) -> "barGroup barGroup-#{i} #{bar.label}")
 
-    @barGroups = @groups.selectAll(".bar")
-      .data((label, i) -> normalizedBars[i].map((v) -> { value: v }))
-      .enter()
+    @barGroups = @groups
       .append("g")
-      .attr("class", (barValue, i) -> "bar bar-#{i}")
+      .attr("class", (bar, i) -> "bar bar-#{i}")
 
-      
-    @bars = @barGroups
-      .filter((data, zero, i) -> i + 1 < normalizedBars.length)
-      .append("rect")
+    @barGroupsWithoutTotal = @barGroups
+      .filter((data, i) -> i !=0)
 
-    # total bar
-    @totalBarGroup = @barGroups
-      .filter((data, zero, i) -> i + 1 == normalizedBars.length)
-      .append("g")
-
-    @totalBarBackground = @totalBarGroup
-      .append("rect")
-      .attr("id", "totalBackground")
-
-    @totalBar = @totalBarGroup
-      .append("rect")
-      .attr("id", "total")
-
-    @dots = @barGroups
-      .filter((data, zero, i) -> i + 1 < normalizedBars.length)
+    @bars = @barGroupsWithoutTotal.append("rect")
+    @dots = @barGroupsWithoutTotal
       .append("circle")
       .attr("r", 5)
 
-    if @options.tooltips
-      tooltipFormat = @options.tooltipFormat
-      tip = (@tip ||= new Tooltip(document))
-      @bars.on("mouseover", (d) ->
-        tip.html(tooltipFormat(d.value))
-        tip.show(this))
+    @tooltips = @barGroupsWithoutTotal
+      .append("text")
+      .attr("text-anchor", "middle")
 
-      @bars.on("mouseout", (d) -> tip.hide())
+    # total bar
+    @totalBarGroup = @barGroups
+      .filter((data, i) -> i == 0)
+      .datum({ value: @sum(), label: "Free Spending"})
+      .append("g")
+      .attr("class", "total")
 
-      @totalBar.on("mouseover", (d) ->
-        tip.html(tooltipFormat(d.value))
-        tip.show(this))
+    @totalBarBackground = @totalBarGroup
+      .append("rect")
+      .attr("class", "background")
 
-      @totalBar.on("mouseout", (d) -> tip.hide())
+    @totalBar = @totalBarGroup
+      .append("rect")
+      .attr("class", "sum")
+
+    @totalBarTooltip = @totalBarGroup
+      .append("text")
+      .attr("text-anchor", "middle")
 
     @render()
-    
+
 module.exports = BarChart

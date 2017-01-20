@@ -46,15 +46,19 @@
         </code></pre>
       </div>
     </div>
-    
+
     <script src="vendor/d3.min.js"></script>
     <script src="../dist/suave-charts.min.js"></script>
     <script id="js1">
 // Create a bar chart
-var chart = new Suave.BarChart("#chart", { layout: "vertical" })
+var chart = new Suave.BarChart("#chart", {
+  layout: "vertical",
+  tooltipFormat: function(y) { return "$" + d3.format(",.0f")(y) }
+})
 
 // Draw the chart
 chart.draw({
+  domain: [0, 5000],
   labels: [
     "Emergency Savings",
     "401k",
@@ -65,13 +69,13 @@ chart.draw({
   ],
 
   bars: [
+    1000,
+    2000,
     1,
-    4,
-    8,
-    12,
-    15,
+    3,
+    5,
     5
-  ],
+  ]
 })
     </script>
 
