@@ -123,6 +123,8 @@ class BarChart extends AbstractChart
         totalBarTooltip
           .attr("y", layout.barY({ value: newTotalBarValue }) - tipPadding)
           .text(tooltipFormat(newTotalBarValue))
+
+        this.dispatchEvent(new CustomEvent("goalChartChanged", {detail : e, bubbles: true}))
       )
 
     @dots
