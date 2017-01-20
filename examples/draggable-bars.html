@@ -57,7 +57,6 @@ function formatMoney(y) {
   return "$" + d3.format(",.0f")(y)
 }
 var chart = new Suave.GoalsChart("#chart", {
-  layout: "vertical",
   yLabelFormat: formatMoney,
   tooltipFormat: formatMoney
 })
