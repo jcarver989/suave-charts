@@ -93,8 +93,9 @@ class GoalsChart extends AbstractChart
     sum = @sum
     tooltipFormat = @options.tooltipFormat
     tipPadding = @tipPadding
+    onChangeCallback = @options.onChange
     drag = d3.behavior.drag()
-      .on("drag", (e) ->
+    drag.on("drag", (e) ->
         # have an existing value. The new value's delta can't exceed the remaining space
         totalBarValue = sum()
         delta = Math.min(Math.round(y.invert(d3.event.y) - e.value), totalBarValue)
@@ -123,9 +124,11 @@ class GoalsChart extends AbstractChart
         totalBarTooltip
           .attr("y", layout.barY({ value: newTotalBarValue }) - tipPadding)
           .text(tooltipFormat(newTotalBarValue))
+    )
 
-        this.dispatchEvent(new CustomEvent("goalChartChanged", {detail : e, bubbles: true}))
-      )
+    drag.on("dragend", (e) ->
+      if onChangeCallback? then onChangeCallback({ label: e.label, value: e.value, remaining: sum() })
+    )
 
     @dots
        .attr("cx", (d) -> layout.barX(d) + 0.5 * layout.barWidth())
