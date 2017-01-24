@@ -93,7 +93,7 @@ class GoalsChart extends AbstractChart
     sum = @sum
     tooltipFormat = @options.tooltipFormat
     tipPadding = @tipPadding
-    onChangeCallback = @options.onChange
+    onChangeCallback = @onChangeCallback
     drag = d3.behavior.drag()
     drag.on("drag", (e) ->
         # have an existing value. The new value's delta can't exceed the remaining space
@@ -131,13 +131,14 @@ class GoalsChart extends AbstractChart
     )
 
     @dots
-       .attr("cx", (d) -> layout.barX(d) + 0.5 * layout.barWidth())
-       .attr("cy", (d) -> layout.barY(d) + 2.5)
+       .attr("cx", (d) => layout.barX(d) + 0.5 * layout.barWidth())
+       .attr("cy", (d) => layout.barY(d) + 0.5 * @options.dotSize)
        .attr("class", "drag-handle")
        .call(drag)
 
   draw: (data) ->
     super()
+    @onChangeCallback = data.onChangeCallback
     @waitToBeInDom(() => @drawInternal(data))
 
   drawInternal: (data) ->
@@ -176,7 +177,7 @@ class GoalsChart extends AbstractChart
     @bars = @barGroupsWithoutTotal.append("rect")
     @dots = @barGroupsWithoutTotal
       .append("circle")
-      .attr("r", 5)
+      .attr("r", @options.dotSize)
 
     @tooltips = @barGroupsWithoutTotal
       .append("text")
