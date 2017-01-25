@@ -14,7 +14,7 @@ class AbstractChart
     else
       setTimeout(
         () => @waitToBeInDom(func),
-        100
+        10
       )
 
   draw: () ->

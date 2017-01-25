@@ -21,6 +21,7 @@ class GoalsChart extends AbstractChart
       .scale(@y)
       .tickFormat(@options.yLabelFormat)
       .tickPadding(@axisLabelPadding)
+      .ticks(5)
 
     @xAxis.orient("bottom")
     @yAxis.orient("left")
@@ -34,6 +35,8 @@ class GoalsChart extends AbstractChart
   render: () =>
     @svg.resize()
     @x.rangeRoundBands([0, @svg.width])
+    @yAxis.tickSize(-@svg.width, 0) if @options.grid
+
     layout = {
       xTransform: "translate(0, #{@svg.height})",
       yTransform: "",
@@ -52,6 +55,8 @@ class GoalsChart extends AbstractChart
     @xAxisSelection
       .attr("transform", layout.xTransform)
       .call(@xAxis)
+      .selectAll(".tick text")
+      .call(@wrap2, layout.barWidth())
 
     @yAxisSelection
       .attr("transform", layout.yTransform)
@@ -135,6 +140,44 @@ class GoalsChart extends AbstractChart
        .attr("cy", (d) => layout.barY(d) + 0.5 * @options.dotSize)
        .attr("class", "drag-handle")
        .call(drag)
+
+
+
+
+  wrap2: (text, width) ->
+    text.each(() ->
+      text = d3.select(this)
+      y = text.attr('y')
+      dy = parseFloat(text.attr('dy'))
+      dy = parseFloat(text.attr('dy'))
+      words = text.text().split(/([0-9]+ year.*)/)
+      lineHeight = 1.5
+      text.text(null)
+      words.forEach((w, i) ->
+        text.append("tspan").attr("x", 0).attr('y', y).attr('dy', i * lineHeight + dy + 'em').text(w)
+      )
+    )
+
+  wrap: (text, width) ->
+    text.each(() ->
+      text = d3.select(this)
+      words = text.text().split(/\s+/).reverse()
+      word = undefined
+      line = []
+      lineNumber = 0
+      lineHeight = 1.1
+      y = text.attr('y')
+      dy = parseFloat(text.attr('dy'))
+      tspan = text.text(null).append('tspan').attr('x', 0).attr('y', y).attr('dy', dy + 'em')
+      while word = words.pop()
+        line.push(word)
+        tspan.text(line.join(' '))
+        if (tspan.node().getComputedTextLength() > width)
+          line.pop()
+          tspan.text line.join(' ')
+          line = [ word ]
+          tspan = text.append('tspan').attr('x', 0).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy + 'em').text(word)
+    )
 
   draw: (data) ->
     super()
