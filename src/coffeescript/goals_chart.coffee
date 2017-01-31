@@ -108,7 +108,7 @@ class GoalsChart extends AbstractChart
         e.value = newValue
 
         handle = d3.select(this)
-        handle.attr("cy",  y(newValue))
+        handle.selectAll("circle").attr("cy",  y(newValue))
         parent = d3.select(this.parentNode)
         parent
           .select("rect")
@@ -137,11 +137,15 @@ class GoalsChart extends AbstractChart
 
     @dots
        .attr("cx", (d) => layout.barX(d) + 0.5 * layout.barWidth())
-       .attr("cy", (d) => layout.barY(d) + 0.5 * @options.dotSize)
+       .attr("cy", (d) => layout.barY(d))
        .attr("class", "drag-handle")
-       .call(drag)
 
+    @innerDots
+       .attr("cx", (d) => layout.barX(d) + 0.5 * layout.barWidth())
+       .attr("cy", (d) => layout.barY(d))
+       .attr("class", "drag-handle-inner")
 
+    @dotGroups.call(drag)
 
 
   wrap2: (text, width) ->
@@ -218,9 +222,16 @@ class GoalsChart extends AbstractChart
       .filter((data, i) -> i !=0)
 
     @bars = @barGroupsWithoutTotal.append("rect")
-    @dots = @barGroupsWithoutTotal
+
+    @dotGroups = @barGroupsWithoutTotal.append("g").attr("class", "drag-handle-group")
+
+    @dots = @dotGroups
       .append("circle")
       .attr("r", @options.dotSize)
+
+    @innerDots = @dotGroups
+      .append("circle")
+      .attr("r", @options.dotSize / 2)
 
     @tooltips = @barGroupsWithoutTotal
       .append("text")

@@ -57,6 +57,7 @@ function formatMoney(y) {
   return "$" + d3.format(",.0f")(y)
 }
 var chart = new Suave.GoalsChart(document.body.querySelector("#chart"), {
+dotSize: 8 
 })
 
 // Draw the chart
