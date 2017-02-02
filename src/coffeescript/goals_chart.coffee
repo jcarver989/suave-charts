@@ -56,7 +56,7 @@ class GoalsChart extends AbstractChart
       .attr("transform", layout.xTransform)
       .call(@xAxis)
       .selectAll(".tick text")
-      .call(@wrap2, layout.barWidth())
+      .call(@wrap, layout.barWidth())
 
     @yAxisSelection
       .attr("transform", layout.yTransform)
@@ -80,10 +80,29 @@ class GoalsChart extends AbstractChart
       .attr("width", layout.barWidth)
       .attr("height", @y.range()[0])
 
+
+    tipX = (d) => layout.barX(d) + 0.5 * layout.barWidth()
+    tipY = (d) => Math.min(layout.barY(d) - @tipPadding, @svg.height - @tipPadding)
+    lineHeight = 1.5
+
     @tooltips
-      .attr("x", (d) => layout.barX(d) + 0.5 * layout.barWidth())
-      .attr("y", (d) => Math.min(layout.barY(d) - @tipPadding, @svg.height - @tipPadding))
+      .attr("x", tipX)
+      .attr("y", tipY)
+
+    @tooltips
+      .append("tspan")
+      .attr("x", tipX)
+      .attr("y", tipY)
+      .attr('dy', -lineHeight + 'em')
       .text((d) => @options.tooltipFormat(d.value))
+
+    @tooltips
+      .append("tspan")
+      .attr("class", "sub-label")
+      .attr("x", tipX)
+      .attr("y", tipY)
+      .attr('dy', 0 + 'em')
+      .text((d) => d.tooltipLabel)
 
     @totalBarTooltip
       .attr("x", (d) => layout.barX(d) + 0.5 * layout.barWidth())
@@ -118,6 +137,7 @@ class GoalsChart extends AbstractChart
         parent
           .select("text")
           .attr("y", (d) -> layout.barY(d) - tipPadding)
+          .attr('dy', -lineHeight + 'em')
           .text(tooltipFormat(newValue))
 
         newTotalBarValue = sum()
@@ -148,7 +168,7 @@ class GoalsChart extends AbstractChart
     @dotGroups.call(drag)
 
 
-  wrap2: (text, width) ->
+  wrap: (text, width) ->
     text.each(() ->
       text = d3.select(this)
       y = text.attr('y')
@@ -160,27 +180,6 @@ class GoalsChart extends AbstractChart
       words.forEach((w, i) ->
         text.append("tspan").attr("x", 0).attr('y', y).attr('dy', i * lineHeight + dy + 'em').text(w)
       )
-    )
-
-  wrap: (text, width) ->
-    text.each(() ->
-      text = d3.select(this)
-      words = text.text().split(/\s+/).reverse()
-      word = undefined
-      line = []
-      lineNumber = 0
-      lineHeight = 1.1
-      y = text.attr('y')
-      dy = parseFloat(text.attr('dy'))
-      tspan = text.text(null).append('tspan').attr('x', 0).attr('y', y).attr('dy', dy + 'em')
-      while word = words.pop()
-        line.push(word)
-        tspan.text(line.join(' '))
-        if (tspan.node().getComputedTextLength() > width)
-          line.pop()
-          tspan.text line.join(' ')
-          line = [ word ]
-          tspan = text.append('tspan').attr('x', 0).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy + 'em').text(word)
     )
 
   draw: (data) ->
@@ -195,7 +194,8 @@ class GoalsChart extends AbstractChart
     )
 
     barData = [{ value: startingTotal, label: data.domainLabel }]
-    data.bars.forEach((v, i) -> barData.push({ value: v, label: data.labels[i] }))
+    tooltipLabels = if data.tooltipLabels? then data.tooltipLabels else ("" for x in data.labels)
+    data.bars.forEach((v, i) -> barData.push({ value: v, label: data.labels[i], tooltipLabel: tooltipLabels[i] }))
 
     @y.domain(data.domain)
     @x.domain(barData.map((d) -> d.label))
