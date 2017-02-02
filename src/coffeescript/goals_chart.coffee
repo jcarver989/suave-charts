@@ -89,15 +89,13 @@ class GoalsChart extends AbstractChart
       .attr("x", tipX)
       .attr("y", tipY)
 
-    @tooltips
-      .append("tspan")
+    @labels
       .attr("x", tipX)
       .attr("y", tipY)
       .attr('dy', -lineHeight + 'em')
       .text((d) => @options.tooltipFormat(d.value))
 
-    @tooltips
-      .append("tspan")
+    @subLabels
       .attr("class", "sub-label")
       .attr("x", tipX)
       .attr("y", tipY)
@@ -236,6 +234,9 @@ class GoalsChart extends AbstractChart
     @tooltips = @barGroupsWithoutTotal
       .append("text")
       .attr("text-anchor", "middle")
+
+    @labels = @tooltips.append("tspan")
+    @subLabels = @tooltips.append("tspan")
 
     # total bar
     @totalBarGroup = @barGroups
