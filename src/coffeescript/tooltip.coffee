@@ -1,15 +1,16 @@
 class Tooltip
   constructor: (doc) ->
     @cssClass = "suave-tooltip"
-    @tip = d3.select(doc.createElement('div'))
+    node = doc.querySelector("." + @cssClass) || doc.createElement('div')
+    @tip = d3.select(node)
     @tip.attr("class", @cssClass)
     doc.body.appendChild(@tip.node())
 
-  html: (content) => 
+  html: (content) =>
     @tip.html(content)
 
   show: (node) =>
-    offset = @offset(node)    
+    offset = @offset(node)
     @tip.attr("class", "#{@cssClass} show")
     @tip.style({
       "position" : "absolute",
@@ -35,6 +36,6 @@ class Tooltip
     scrollY = window.scrollY
 
     { top: nodeCoords.top - (tipHeight + 10) + window.scrollY, left: nodeCenter - (tipWidth / 2) + window.scrollX }
-    
+
 
 module.exports = Tooltip
