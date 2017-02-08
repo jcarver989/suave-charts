@@ -195,7 +195,9 @@ class GoalsChart extends AbstractChart
     tooltipLabels = if data.tooltipLabels? then data.tooltipLabels else ("" for x in data.labels)
     data.bars.forEach((v, i) -> barData.push({ value: v, label: data.labels[i], tooltipLabel: tooltipLabels[i] }))
 
-    @y.domain(data.domain)
+    [min, expectedMax] = data.domain
+    max = Math.max(startingTotal, expectedMax)
+    @y.domain([min, max])
     @x.domain(barData.map((d) -> d.label))
 
     @options.margin.left = @calc.calcLeftMargin(@yAxis, @options.margin.left)
